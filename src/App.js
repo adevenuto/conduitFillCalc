@@ -64,23 +64,61 @@ const ConduitFillCalculator = () => {
   // Check if any wires have empty type (incomplete)
   const hasIncompleteWires = wires.some(wire => wire.type === '');
 
-  const addPreset = (presetKey) => {
+  const addPreset = (presetKey, quantity = 1) => {
     const preset = wirePresets[presetKey];
-    const newWires = preset.wires.map((wire, index) => ({
-      ...wire,
-      id: Date.now() + index
-    }));
-    setWires([...wires, ...newWires]);
+    const presetGroupId = `preset-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    
+    // Create all wires for the specified quantity under the same group
+    const allNewWires = [];
+    for (let q = 0; q < quantity; q++) {
+      const newWires = preset.wires.map((wire, index) => ({
+        ...wire,
+        id: Date.now() + (q * 1000) + index, // Ensure unique IDs
+        presetGroup: presetGroupId,
+        presetName: preset.name,
+        presetKey: presetKey
+      }));
+      allNewWires.push(...newWires);
+    }
+    
+    setWires([...wires, ...allNewWires]);
   };
 
   const removeWire = (id) => {
     setWires(wires.filter(w => w.id !== id));
   };
 
+  const removePresetGroup = (presetGroup) => {
+    setWires(wires.filter(w => w.presetGroup !== presetGroup));
+  };
+
   const updateWire = (id, field, value) => {
     setWires(wires.map(w => 
       w.id === id ? { ...w, [field]: value } : w
     ));
+  };
+
+  // Group wires by preset groups
+  const groupedWires = () => {
+    const groups = {};
+    const individualWires = [];
+
+    wires.forEach(wire => {
+      if (wire.presetGroup) {
+        if (!groups[wire.presetGroup]) {
+          groups[wire.presetGroup] = {
+            presetName: wire.presetName,
+            presetKey: wire.presetKey,
+            wires: []
+          };
+        }
+        groups[wire.presetGroup].wires.push(wire);
+      } else {
+        individualWires.push(wire);
+      }
+    });
+
+    return { groups, individualWires };
   };
 
   const clearAllWires = () => {
@@ -499,103 +537,238 @@ const ConduitFillCalculator = () => {
                 </div>
               )}
 
-              {/* Show actual wires */}
-              {wires.map((wire) => {
-                const availableSizes = Object.keys(wireTypes[wire.type]?.areas || {});
+              {/* Show grouped wires */}
+              {(() => {
+                const { groups, individualWires } = groupedWires();
+                
                 return (
-                  <div key={wire.id} className="flex gap-2 mb-2">
-                    <select
-                      value={wire.type}
-                      onChange={(e) => {
-                        const newType = e.target.value;
-                        updateWire(wire.id, 'type', newType);
+                  <>
+                    {/* Preset Groups */}
+                    {Object.entries(groups).map(([groupId, group]) => (
+                      <div key={groupId} className="mb-4">
+                        <div className="bg-blue-50 border border-blue-200 rounded-lg p-2 mb-2">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <span className="text-xs font-semibold text-blue-800">
+                                📋 {group.presetName}
+                              </span>
+                              <span className="text-xs text-blue-600 bg-blue-100 px-2 py-0.5 rounded">
+                                {group.wires.length} wire{group.wires.length !== 1 ? 's' : ''}
+                              </span>
+                            </div>
+                            <button
+                              onClick={() => removePresetGroup(groupId)}
+                              className="text-xs px-2 py-1 text-red-600 hover:bg-red-100 rounded transition-colors"
+                              title="Remove entire preset"
+                            >
+                              <X size={14} />
+                            </button>
+                          </div>
+                        </div>
                         
-                        if (newType === 'CUSTOM') {
-                          // Initialize custom area when switching to custom wire
-                          updateWire(wire.id, 'customArea', 0.01);
-                        } else if (newType !== '') {
-                          // Handle standard wire type size selection
-                          const newAvailableSizes = Object.keys(wireTypes[newType].areas);
-                          const newSize = newAvailableSizes.includes(wire.size) ? 
-                            wire.size : newAvailableSizes[0];
-                          if (newSize !== wire.size) {
-                            updateWire(wire.id, 'size', newSize);
-                          }
-                        }
-                      }}
-                      className={`flex-1 px-2 py-2 text-xs border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                        wire.type === '' 
-                          ? 'border-red-300 bg-red-50 text-red-700' 
-                          : 'border-gray-300 bg-white text-gray-800'
-                      }`}
-                    >
-                      <option value="">→ Select wire type</option>
-                      {[
-                        ['CUSTOM', wireTypes.CUSTOM],
-                        ...Object.entries(wireTypes).filter(([key]) => key !== 'CUSTOM')
-                      ].map(([key, type]) => (
-                        <option key={key} value={key}>
-                          {type.label}
-                        </option>
-                      ))}
-                    </select>
+                        {group.wires.map((wire) => {
+                          const availableSizes = Object.keys(wireTypes[wire.type]?.areas || {});
+                          return (
+                            <div key={wire.id} className="flex gap-2 mb-2 ml-4">
+                              <div className="w-1 bg-blue-300 rounded-full mr-2"></div>
+                              <select
+                                value={wire.type}
+                                onChange={(e) => {
+                                  const newType = e.target.value;
+                                  updateWire(wire.id, 'type', newType);
+                                  
+                                  if (newType === 'CUSTOM') {
+                                    updateWire(wire.id, 'customArea', 0.01);
+                                  } else if (newType !== '') {
+                                    const newAvailableSizes = Object.keys(wireTypes[newType].areas);
+                                    const newSize = newAvailableSizes.includes(wire.size) ? 
+                                      wire.size : newAvailableSizes[0];
+                                    if (newSize !== wire.size) {
+                                      updateWire(wire.id, 'size', newSize);
+                                    }
+                                  }
+                                }}
+                                className={`flex-1 px-2 py-2 text-xs border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                                  wire.type === '' 
+                                    ? 'border-red-300 bg-red-50 text-red-700' 
+                                    : 'border-gray-300 bg-blue-50 text-gray-800'
+                                }`}
+                              >
+                                <option value="">→ Select wire type</option>
+                                {[
+                                  ['CUSTOM', wireTypes.CUSTOM],
+                                  ...Object.entries(wireTypes).filter(([key]) => key !== 'CUSTOM')
+                                ].map(([key, type]) => (
+                                  <option key={key} value={key}>
+                                    {type.label}
+                                  </option>
+                                ))}
+                              </select>
 
-                    {wire.type === 'CUSTOM' ? (
-                      <input
-                        type="number"
-                        min="0.0001"
-                        max="10"
-                        step="0.0001"
-                        value={wire.customArea || ''}
-                        onChange={(e) => updateWire(wire.id, 'customArea', parseFloat(e.target.value) || 0)}
-                        placeholder="0.0123"
-                        className="w-20 px-2 py-2 text-xs border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-yellow-50 text-gray-900 text-center"
-                        title="Wire area in square inches"
-                      />
-                    ) : (
-                      <select
-                        value={wire.size}
-                        onChange={(e) => updateWire(wire.id, 'size', e.target.value)}
-                        className="w-20 px-2 py-2 text-xs border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-800"
-                      >
-                        {availableSizes.map(size => (
-                          <option key={size} value={size}>
-                            {size.includes('/') ? size : `#${size}`}
-                          </option>
-                        ))}
-                      </select>
+                              {wire.type === 'CUSTOM' ? (
+                                <input
+                                  type="number"
+                                  min="0.0001"
+                                  max="10"
+                                  step="0.0001"
+                                  value={wire.customArea || ''}
+                                  onChange={(e) => updateWire(wire.id, 'customArea', parseFloat(e.target.value) || 0)}
+                                  placeholder="0.0123"
+                                  className="w-20 px-2 py-2 text-xs border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-yellow-50 text-gray-900 text-center"
+                                  title="Wire area in square inches"
+                                />
+                              ) : (
+                                <select
+                                  value={wire.size}
+                                  onChange={(e) => updateWire(wire.id, 'size', e.target.value)}
+                                  className="w-20 px-2 py-2 text-xs border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-blue-50 text-gray-800"
+                                >
+                                  {availableSizes.map(size => (
+                                    <option key={size} value={size}>
+                                      {size.includes('/') ? size : `#${size}`}
+                                    </option>
+                                  ))}
+                                </select>
+                              )}
+
+                              <input
+                                type="number"
+                                min="1"
+                                max="50"
+                                value={wire.quantity}
+                                onChange={(e) => updateWire(wire.id, 'quantity', e.target.value)}
+                                className="w-14 px-2 py-2 text-xs border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-blue-50 text-gray-800"
+                                placeholder="Qty"
+                              />
+
+                              <select
+                                value={wire.role}
+                                onChange={(e) => updateWire(wire.id, 'role', e.target.value)}
+                                className="w-20 px-2 py-2 text-xs border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-blue-50 text-gray-800"
+                              >
+                                <option value="phase">Phase</option>
+                                <option value="neutral">Neutral</option>
+                                <option value="ground">Ground</option>
+                                <option value="spare">Spare</option>
+                              </select>
+
+                              <button
+                                onClick={() => removeWire(wire.id)}
+                                className="px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-500 transition-colors"
+                              >
+                                <X size={16} />
+                              </button>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    ))}
+
+                    {/* Individual Wires */}
+                    {individualWires.length > 0 && (
+                      <div>
+                        {Object.keys(groups).length > 0 && (
+                          <div className="text-xs text-gray-600 mb-2 font-medium">Individual Wires:</div>
+                        )}
+                        {individualWires.map((wire) => {
+                          const availableSizes = Object.keys(wireTypes[wire.type]?.areas || {});
+                          return (
+                            <div key={wire.id} className="flex gap-2 mb-2">
+                              <select
+                                value={wire.type}
+                                onChange={(e) => {
+                                  const newType = e.target.value;
+                                  updateWire(wire.id, 'type', newType);
+                                  
+                                  if (newType === 'CUSTOM') {
+                                    updateWire(wire.id, 'customArea', 0.01);
+                                  } else if (newType !== '') {
+                                    const newAvailableSizes = Object.keys(wireTypes[newType].areas);
+                                    const newSize = newAvailableSizes.includes(wire.size) ? 
+                                      wire.size : newAvailableSizes[0];
+                                    if (newSize !== wire.size) {
+                                      updateWire(wire.id, 'size', newSize);
+                                    }
+                                  }
+                                }}
+                                className={`flex-1 px-2 py-2 text-xs border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                                  wire.type === '' 
+                                    ? 'border-red-300 bg-red-50 text-red-700' 
+                                    : 'border-gray-300 bg-white text-gray-800'
+                                }`}
+                              >
+                                <option value="">→ Select wire type</option>
+                                {[
+                                  ['CUSTOM', wireTypes.CUSTOM],
+                                  ...Object.entries(wireTypes).filter(([key]) => key !== 'CUSTOM')
+                                ].map(([key, type]) => (
+                                  <option key={key} value={key}>
+                                    {type.label}
+                                  </option>
+                                ))}
+                              </select>
+
+                              {wire.type === 'CUSTOM' ? (
+                                <input
+                                  type="number"
+                                  min="0.0001"
+                                  max="10"
+                                  step="0.0001"
+                                  value={wire.customArea || ''}
+                                  onChange={(e) => updateWire(wire.id, 'customArea', parseFloat(e.target.value) || 0)}
+                                  placeholder="0.0123"
+                                  className="w-20 px-2 py-2 text-xs border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-yellow-50 text-gray-900 text-center"
+                                  title="Wire area in square inches"
+                                />
+                              ) : (
+                                <select
+                                  value={wire.size}
+                                  onChange={(e) => updateWire(wire.id, 'size', e.target.value)}
+                                  className="w-20 px-2 py-2 text-xs border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-800"
+                                >
+                                  {availableSizes.map(size => (
+                                    <option key={size} value={size}>
+                                      {size.includes('/') ? size : `#${size}`}
+                                    </option>
+                                  ))}
+                                </select>
+                              )}
+
+                              <input
+                                type="number"
+                                min="1"
+                                max="50"
+                                value={wire.quantity}
+                                onChange={(e) => updateWire(wire.id, 'quantity', e.target.value)}
+                                className="w-14 px-2 py-2 text-xs border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-800"
+                                placeholder="Qty"
+                              />
+
+                              <select
+                                value={wire.role}
+                                onChange={(e) => updateWire(wire.id, 'role', e.target.value)}
+                                className="w-20 px-2 py-2 text-xs border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-800"
+                              >
+                                <option value="phase">Phase</option>
+                                <option value="neutral">Neutral</option>
+                                <option value="ground">Ground</option>
+                                <option value="spare">Spare</option>
+                              </select>
+
+                              <button
+                                onClick={() => removeWire(wire.id)}
+                                className="px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-500 transition-colors"
+                              >
+                                <X size={16} />
+                              </button>
+                            </div>
+                          );
+                        })}
+                      </div>
                     )}
-
-                    <input
-                      type="number"
-                      min="1"
-                      max="50"
-                      value={wire.quantity}
-                      onChange={(e) => updateWire(wire.id, 'quantity', e.target.value)}
-                      className="w-14 px-2 py-2 text-xs border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-800"
-                      placeholder="Qty"
-                    />
-
-                    <select
-                      value={wire.role}
-                      onChange={(e) => updateWire(wire.id, 'role', e.target.value)}
-                      className="w-20 px-2 py-2 text-xs border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-800"
-                    >
-                      <option value="phase">Phase</option>
-                      <option value="neutral">Neutral</option>
-                      <option value="ground">Ground</option>
-                      <option value="spare">Spare</option>
-                    </select>
-
-                    <button
-                      onClick={() => removeWire(wire.id)}
-                      className="px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-500 transition-colors"
-                    >
-                      <X size={16} />
-                    </button>
-                  </div>
+                  </>
                 );
-              })}
+              })()}
 
               <button
                 onClick={addWire}
@@ -668,33 +841,126 @@ const ConduitFillCalculator = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        {results.wireBreakdown.map((wire, i) => (
-                          <tr key={i} className={`border-t border-gray-200 ${wire.role === 'ground' ? 'bg-emerald-50' : ''}`}>
-                            <td className={`px-2 py-1 ${wire.role === 'ground' ? 'text-emerald-700 font-medium' : 'text-gray-800'}`}>
-                              {wire.role === 'ground' ? '⚡ ' : ''}{wire.wireLabel}
-                            </td>
-                            <td className="px-2 py-1 text-gray-800">
-                              {wire.type === 'CUSTOM' 
-                                ? (
-                                  <span>
-                                    <span className="text-blue-600">🔧</span> Custom ({wire.areaEach.toFixed(4)}in²)
-                                  </span>
-                                ) 
-                                : wire.size.includes('/') ? wire.size : `#${wire.size}`}
-                            </td>
-                            <td className="px-2 py-1 capitalize text-gray-600">
-                              {wire.role === 'ground' ? 'EGC' : wire.role}
-                            </td>
-                            <td className="px-2 py-1 text-right text-gray-800">{wire.quantity}</td>
-                            <td className="px-2 py-1 text-right font-semibold text-blue-600">
-                              {wire.areaTotal.toFixed(4)}
-                            </td>
-                          </tr>
-                        ))}
-                        <tr className="border-t-2 border-blue-400 bg-gray-50 font-bold">
-                          <td colSpan="4" className="px-2 py-1 text-right text-gray-800">Total:</td>
-                          <td className="px-2 py-1 text-right text-blue-600">{results.totalWireArea.toFixed(4)} in²</td>
-                        </tr>
+                        {(() => {
+                          // Group wires by preset
+                          const presetGroups = {};
+                          const individualWires = [];
+                          
+                          results.wireBreakdown.forEach(wire => {
+                            if (wire.presetGroup) {
+                              if (!presetGroups[wire.presetGroup]) {
+                                presetGroups[wire.presetGroup] = {
+                                  presetName: wire.presetName,
+                                  wires: [],
+                                  totalArea: 0
+                                };
+                              }
+                              presetGroups[wire.presetGroup].wires.push(wire);
+                              presetGroups[wire.presetGroup].totalArea += wire.areaTotal;
+                            } else {
+                              individualWires.push(wire);
+                            }
+                          });
+
+                          const rows = [];
+                          
+                          // Add preset groups
+                          Object.entries(presetGroups).forEach(([groupId, group], groupIndex) => {
+                            // Group header
+                            rows.push(
+                              <tr key={`preset-header-${groupId}`} className="bg-blue-100 border-t-2 border-blue-300">
+                                <td colSpan="4" className="px-2 py-1 text-xs font-semibold text-blue-800">
+                                  📋 {group.presetName}
+                                </td>
+                                <td className="px-2 py-1 text-right text-xs font-semibold text-blue-800">
+                                  {group.totalArea.toFixed(4)} in²
+                                </td>
+                              </tr>
+                            );
+                            
+                            // Group wires
+                            group.wires.forEach((wire, wireIndex) => {
+                              rows.push(
+                                <tr key={`preset-${groupId}-wire-${wireIndex}`} 
+                                    className={`border-t border-blue-200 bg-blue-50 ${wire.role === 'ground' ? 'bg-emerald-100' : ''}`}>
+                                  <td className={`px-2 py-1 pl-4 ${wire.role === 'ground' ? 'text-emerald-700 font-medium' : 'text-gray-800'}`}>
+                                    <span className="text-blue-400 mr-1">▸</span>
+                                    {wire.role === 'ground' ? '⚡ ' : ''}{wire.wireLabel}
+                                  </td>
+                                  <td className="px-2 py-1 text-gray-800">
+                                    {wire.type === 'CUSTOM' 
+                                      ? (
+                                        <span>
+                                          <span className="text-blue-600">🔧</span> Custom ({wire.areaEach.toFixed(4)}in²)
+                                        </span>
+                                      ) 
+                                      : wire.size.includes('/') ? wire.size : `#${wire.size}`}
+                                  </td>
+                                  <td className="px-2 py-1 capitalize text-gray-600">
+                                    {wire.role === 'ground' ? 'EGC' : wire.role}
+                                  </td>
+                                  <td className="px-2 py-1 text-right text-gray-800">{wire.quantity}</td>
+                                  <td className="px-2 py-1 text-right font-semibold text-blue-600">
+                                    {wire.areaTotal.toFixed(4)}
+                                  </td>
+                                </tr>
+                              );
+                            });
+                          });
+
+                          // Add individual wires header if there are both presets and individual wires
+                          if (Object.keys(presetGroups).length > 0 && individualWires.length > 0) {
+                            const individualTotal = individualWires.reduce((sum, wire) => sum + wire.areaTotal, 0);
+                            rows.push(
+                              <tr key="individual-header" className="bg-gray-100 border-t-2 border-gray-300">
+                                <td colSpan="4" className="px-2 py-1 text-xs font-semibold text-gray-700">
+                                  Individual Wires
+                                </td>
+                                <td className="px-2 py-1 text-right text-xs font-semibold text-gray-700">
+                                  {individualTotal.toFixed(4)} in²
+                                </td>
+                              </tr>
+                            );
+                          }
+                          
+                          // Add individual wires
+                          individualWires.forEach((wire, i) => {
+                            rows.push(
+                              <tr key={`individual-${i}`} className={`border-t border-gray-200 ${wire.role === 'ground' ? 'bg-emerald-50' : ''}`}>
+                                <td className={`px-2 py-1 ${Object.keys(presetGroups).length > 0 ? 'pl-4' : ''} ${wire.role === 'ground' ? 'text-emerald-700 font-medium' : 'text-gray-800'}`}>
+                                  {Object.keys(presetGroups).length > 0 && <span className="text-gray-400 mr-1">▸</span>}
+                                  {wire.role === 'ground' ? '⚡ ' : ''}{wire.wireLabel}
+                                </td>
+                                <td className="px-2 py-1 text-gray-800">
+                                  {wire.type === 'CUSTOM' 
+                                    ? (
+                                      <span>
+                                        <span className="text-blue-600">🔧</span> Custom ({wire.areaEach.toFixed(4)}in²)
+                                      </span>
+                                    ) 
+                                    : wire.size.includes('/') ? wire.size : `#${wire.size}`}
+                                </td>
+                                <td className="px-2 py-1 capitalize text-gray-600">
+                                  {wire.role === 'ground' ? 'EGC' : wire.role}
+                                </td>
+                                <td className="px-2 py-1 text-right text-gray-800">{wire.quantity}</td>
+                                <td className="px-2 py-1 text-right font-semibold text-blue-600">
+                                  {wire.areaTotal.toFixed(4)}
+                                </td>
+                              </tr>
+                            );
+                          });
+                          
+                          // Total row
+                          rows.push(
+                            <tr key="total" className="border-t-2 border-blue-400 bg-gray-50 font-bold">
+                              <td colSpan="4" className="px-2 py-1 text-right text-gray-800">Total:</td>
+                              <td className="px-2 py-1 text-right text-blue-600">{results.totalWireArea.toFixed(4)} in²</td>
+                            </tr>
+                          );
+                          
+                          return rows;
+                        })()}
                       </tbody>
                     </table>
                   </div>
