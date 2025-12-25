@@ -61,3 +61,31 @@ const Modal = ({ isOpen, onClose, title, children, maxWidth = 'max-w-4xl' }) => 
 };
 
 export default Modal;
+
+
+
+
+
+
+
+const [wiresSelected, setWiresSelected] = useState([
+  {
+    id: 'unique-id-1',
+    type: 'group',
+    presetKey: 'singlePhase120V',
+    presetName: '120V Single Phase (2-wire + ground)',
+    items: [
+      {
+        "Individual wire selections here"
+      }
+    ]
+  },
+  {
+    id: 'unique-id-2', 
+    type: 'single',
+    wireType: 'THWN_2',
+    size: '12',
+    quantity: 2,
+    role: 'phase'
+  }
+]);

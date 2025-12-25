@@ -1,10 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Plus, Minus, Check, X } from 'lucide-react';
 import Modal from './Modal';
 import { wirePresets } from '../utils/nec/wirePresets';
 
-const PresetsModal = ({ isOpen, onClose, onSelectPreset }) => {
+const PresetsModal = ({ isOpen, onClose, currentPresetInstances, onUpdatePresets }) => {
   const [selectedPresets, setSelectedPresets] = useState({});
+
+  // Initialize modal state from current preset instances when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      const initial = {};
+      currentPresetInstances.forEach(instance => {
+        initial[instance.presetKey] = { quantity: instance.quantity };
+      });
+      setSelectedPresets(initial);
+    }
+  }, [isOpen, currentPresetInstances]);
+
   // Categorize presets
   const presetCategories = {
     residential: {
@@ -69,12 +81,8 @@ const PresetsModal = ({ isOpen, onClose, onSelectPreset }) => {
     setSelectedPresets({});
   };
 
-  const handleAddSelected = () => {
-    // Call onSelectPreset for each selected preset with its quantity
-    Object.entries(selectedPresets).forEach(([presetKey, { quantity }]) => {
-      onSelectPreset(presetKey, quantity);
-    });
-    setSelectedPresets({});
+  const handleApply = () => {
+    onUpdatePresets(selectedPresets);
     onClose();
   };
 
@@ -193,6 +201,9 @@ const PresetsModal = ({ isOpen, onClose, onSelectPreset }) => {
     );
   };
 
+  const hasChanges = Object.keys(selectedPresets).length > 0;
+  const isUpdate = currentPresetInstances.length > 0;
+
   return (
     <Modal 
       isOpen={isOpen} 
@@ -204,13 +215,13 @@ const PresetsModal = ({ isOpen, onClose, onSelectPreset }) => {
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
           <h3 className="font-semibold text-blue-900 mb-2">📋 Quick Start Guide</h3>
           <p className="text-sm text-blue-800 mb-2">
-            Select multiple presets and adjust quantities to add common wire configurations to your calculation.
+            Select presets and adjust quantities. When you click Apply, your current preset selections will be replaced.
           </p>
           <ul className="text-xs text-blue-700 space-y-1">
             <li>• Click presets to select them, then adjust quantities with +/- buttons</li>
             <li>• You can select multiple presets at once</li>
             <li>• Presets are based on common electrical installations</li>
-            <li>• You can still add individual wires manually after adding presets</li>
+            <li>• You can still add individual wires manually after applying presets</li>
           </ul>
         </div>
 
@@ -226,34 +237,39 @@ const PresetsModal = ({ isOpen, onClose, onSelectPreset }) => {
       </div>
 
       {/* Selection Footer */}
-      {Object.keys(selectedPresets).length > 0 && (
-        <div className="sticky bottom-0 bg-white border-t border-gray-200 p-4 mt-4">
-          <div className="flex items-center justify-between">
-            <div className="text-sm text-gray-700">
-              <span className="font-semibold">
-                {Object.keys(selectedPresets).length} preset{Object.keys(selectedPresets).length !== 1 ? 's' : ''} selected
-              </span>
-              <span className="text-gray-500 ml-2">
-                (Total: {Object.values(selectedPresets).reduce((sum, { quantity }) => sum + quantity, 0)} circuit{Object.values(selectedPresets).reduce((sum, { quantity }) => sum + quantity, 0) !== 1 ? 's' : ''})
-              </span>
-            </div>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={clearSelection}
-                className="text-sm px-3 py-2 text-gray-600 hover:text-gray-800 transition-colors"
-              >
-                Clear Selection
-              </button>
-              <button
-                onClick={handleAddSelected}
-                className="text-sm px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
-              >
-                Add Selected Presets
-              </button>
-            </div>
+      <div className="sticky bottom-0 bg-white border-t border-gray-200 p-4 mt-4">
+        <div className="flex items-center justify-between">
+          <div className="text-sm text-gray-700">
+            {Object.keys(selectedPresets).length > 0 ? (
+              <>
+                <span className="font-semibold">
+                  {Object.keys(selectedPresets).length} preset{Object.keys(selectedPresets).length !== 1 ? 's' : ''} selected
+                </span>
+                <span className="text-gray-500 ml-2">
+                  (Total: {Object.values(selectedPresets).reduce((sum, { quantity }) => sum + quantity, 0)} circuit{Object.values(selectedPresets).reduce((sum, { quantity }) => sum + quantity, 0) !== 1 ? 's' : ''})
+                </span>
+              </>
+            ) : (
+              <span className="text-gray-500">No presets selected</span>
+            )}
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={clearSelection}
+              className="text-sm px-3 py-2 text-gray-600 hover:text-gray-800 transition-colors"
+            >
+              Clear Selection
+            </button>
+            <button
+              onClick={handleApply}
+              disabled={!hasChanges}
+              className="text-sm px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium disabled:bg-gray-300 disabled:cursor-not-allowed"
+            >
+              {isUpdate ? 'Update Presets' : 'Add Selected Presets'}
+            </button>
           </div>
         </div>
-      )}
+      </div>
     </Modal>
   );
 };
