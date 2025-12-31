@@ -30,6 +30,7 @@ jobs:
           host: ${{ vars.HOSTINGER_HOST }}
           username: ${{ vars.HOSTINGER_USER }}
           key: ${{ secrets.HOSTINGER_SSH_KEY }}
+          port: 65002
           source: "dist/*"
           target: "${{ vars.DEPLOY_PATH }}/public_html"
           strip_components: 1
