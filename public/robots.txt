@@ -1,0 +1,11 @@
+# Robots.txt for NEC Conduit Fill Calculator
+# Allow all search engines to crawl the site
+
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://www.conduitwirefillcalculator.com/sitemap.xml
+
+# Crawl-delay for politeness (optional)
+Crawl-delay: 1

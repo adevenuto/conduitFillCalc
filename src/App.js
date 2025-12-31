@@ -296,14 +296,18 @@ const ConduitFillCalculator = () => {
   return (
     <div className="min-h-screen p-4 bg-gradient-to-br from-gray-100 via-slate-50 to-gray-100">
       <div className="mx-auto max-w-7xl">
-        <div className="p-4 mb-4 bg-white border border-gray-200 rounded-lg shadow">
+        {/* Main Header with SEO-rich content */}
+        <header className="p-4 mb-4 bg-white border border-gray-200 rounded-lg shadow">
           <h1 className="text-2xl font-bold text-slate-800">
-            NEC Conduit Fill Calculator
+            NEC Conduit Fill Calculator - Electrical Wire Sizing Tool
           </h1>
           <p className="text-sm text-gray-600">
-            Calculate conduit sizing based on NEC Chapter 9, Tables 1, 4 & 5
+            Calculate electrical conduit fill percentages and conduit sizing based on NEC Chapter 9, Tables 1, 4 & 5
           </p>
-        </div>
+          <p className="mt-2 text-xs text-gray-500">
+            Professional tool for electricians to determine proper conduit sizing for EMT, PVC, Rigid, IMC, and Flexible conduit types
+          </p>
+        </header>
 
         <div className="grid grid-cols-1 gap-4 text-gray-800 lg:grid-cols-2">
           {/* LEFT COLUMN - Form */}
@@ -1100,9 +1104,123 @@ const ConduitFillCalculator = () => {
           </div>
         </div>
 
-        <div className="p-3 mt-4 text-xs text-center text-gray-700 bg-white border border-gray-200 rounded-lg shadow">
-          <p>⚠️ Reference only. Consult a licensed electrician and verify with local code...</p>
-        </div>
+        {/* SEO-rich footer section */}
+        <footer className="mt-4 space-y-4">
+          <div className="p-3 text-xs text-center text-gray-700 bg-white border border-gray-200 rounded-lg shadow">
+            <p>⚠️ Reference only. Consult a licensed electrician and verify with local code requirements.</p>
+          </div>
+          
+          {/* About Section - SEO Content */}
+          <article className="p-6 bg-white border border-gray-200 rounded-lg shadow">
+            <h2 className="mb-3 text-xl font-bold text-slate-800">
+              About This Electrical Conduit Fill Calculator
+            </h2>
+            
+            <div className="space-y-4 text-sm text-gray-700">
+              <section>
+                <h3 className="mb-2 font-semibold text-slate-800">What is NEC Conduit Fill?</h3>
+                <p className="leading-relaxed">
+                  NEC conduit fill refers to the maximum amount of electrical wire or cable that can be safely installed 
+                  within a conduit according to the National Electrical Code (NEC). Proper conduit fill calculations ensure 
+                  safe electrical installations by preventing overheating and allowing for proper wire pulling during installation.
+                </p>
+              </section>
+              
+              <section>
+                <h3 className="mb-2 font-semibold text-slate-800">How Does This Calculator Work?</h3>
+                <p className="leading-relaxed">
+                  This free online tool calculates conduit fill based on NEC Chapter 9 specifications. It uses Table 1 
+                  (percentage fill), Table 4 (conduit and tubing dimensions), and Table 5 (wire dimensions) to determine 
+                  whether your wire configuration fits within a specific conduit size or to find the minimum conduit size needed.
+                </p>
+              </section>
+              
+              <section>
+                <h3 className="mb-2 font-semibold text-slate-800">Supported Conduit Types</h3>
+                <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
+                  <div>
+                    <p className="font-medium text-blue-700">Metal Conduits:</p>
+                    <ul className="ml-4 text-xs list-disc">
+                      <li>EMT (Electrical Metallic Tubing)</li>
+                      <li>RMC (Rigid Metal Conduit)</li>
+                      <li>IMC (Intermediate Metal Conduit)</li>
+                      <li>FMC (Flexible Metal Conduit)</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <p className="font-medium text-blue-700">Nonmetallic Conduits:</p>
+                    <ul className="ml-4 text-xs list-disc">
+                      <li>PVC Schedule 40 & 80</li>
+                      <li>ENT (Electrical Nonmetallic Tubing)</li>
+                      <li>LFMC (Liquidtight Flexible)</li>
+                      <li>LFNC (Liquidtight Flexible Nonmetallic)</li>
+                    </ul>
+                  </div>
+                </div>
+              </section>
+              
+              <section>
+                <h3 className="mb-2 font-semibold text-slate-800">Key Features for Electrical Professionals</h3>
+                <ul className="ml-4 space-y-1 list-disc">
+                  <li>Instant NEC-compliant conduit fill calculations</li>
+                  <li>Support for all common wire types (THHN, THWN, XHHW, etc.)</li>
+                  <li>Visual fill percentage indicators</li>
+                  <li>Preset wire configurations for common applications</li>
+                  <li>Code compliance verification</li>
+                  <li>Custom wire area calculations</li>
+                  <li>Mobile-friendly responsive design</li>
+                </ul>
+              </section>
+              
+              <section>
+                <h3 className="mb-2 font-semibold text-slate-800">Understanding NEC Fill Percentages</h3>
+                <p className="leading-relaxed">
+                  According to NEC Table 1, the maximum conduit fill depends on the number of conductors:
+                </p>
+                <ul className="mt-2 ml-4 space-y-1 list-disc">
+                  <li><strong>1 conductor:</strong> 53% maximum fill</li>
+                  <li><strong>2 conductors:</strong> 31% maximum fill</li>
+                  <li><strong>3 or more conductors:</strong> 40% maximum fill</li>
+                </ul>
+                <p className="mt-2 leading-relaxed">
+                  These percentages ensure adequate space for heat dissipation and ease of wire installation.
+                </p>
+              </section>
+              
+              <section>
+                <h3 className="mb-2 font-semibold text-slate-800">Who Should Use This Tool?</h3>
+                <p className="leading-relaxed">
+                  This electrical conduit fill calculator is designed for:
+                </p>
+                <ul className="mt-2 ml-4 space-y-1 list-disc">
+                  <li>Licensed electricians planning installations</li>
+                  <li>Electrical engineers designing electrical systems</li>
+                  <li>Electrical contractors estimating materials</li>
+                  <li>Building inspectors verifying code compliance</li>
+                  <li>Electrical apprentices and students learning NEC requirements</li>
+                </ul>
+              </section>
+              
+              <section className="p-3 border border-yellow-300 rounded-lg bg-yellow-50">
+                <h3 className="mb-2 font-semibold text-yellow-900">⚠️ Important Disclaimer</h3>
+                <p className="text-xs leading-relaxed text-yellow-800">
+                  This calculator is provided as a reference tool only. Always verify calculations with current NEC code books, 
+                  consult with a licensed electrician, and comply with local electrical codes and regulations. The creators of 
+                  this tool assume no liability for any installations based on these calculations.
+                </p>
+              </section>
+              
+              <section>
+                <h3 className="mb-2 font-semibold text-slate-800">Related Electrical Calculations</h3>
+                <p className="text-xs leading-relaxed text-gray-600">
+                  Keywords: electrical conduit sizing, wire fill percentage calculator, NEC Chapter 9 calculator, 
+                  conduit fill chart, electrical wiring calculator, conductor fill calculation, EMT conduit fill, 
+                  PVC conduit calculator, electrical installation planning, wire sizing tool, conduit fill specifications
+                </p>
+              </section>
+            </div>
+          </article>
+        </footer>
       </div>
       
       {/* Presets Modal */}
