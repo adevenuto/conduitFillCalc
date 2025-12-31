@@ -28,12 +28,12 @@ const Modal = ({ isOpen, onClose, title, children, maxWidth = 'max-w-4xl' }) => 
     <div className="fixed inset-0 z-50 overflow-y-auto">
       {/* Backdrop */}
       <div 
-        className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm transition-opacity duration-300"
+        className="fixed inset-0 transition-opacity duration-300 bg-black bg-opacity-50 backdrop-blur-sm"
         onClick={onClose}
       />
       
       {/* Modal container */}
-      <div className="flex min-h-full items-center justify-center p-4">
+      <div className="flex items-center justify-center min-h-full p-4">
         <div 
           className={`relative w-full ${maxWidth} bg-white rounded-xl shadow-2xl transform transition-all duration-300 scale-100 opacity-100`}
           onClick={(e) => e.stopPropagation()}
@@ -43,7 +43,7 @@ const Modal = ({ isOpen, onClose, title, children, maxWidth = 'max-w-4xl' }) => 
             <h2 className="text-xl font-bold text-slate-800">{title}</h2>
             <button
               onClick={onClose}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              className="p-2 transition-colors rounded-lg hover:bg-gray-100"
               aria-label="Close modal"
             >
               <X size={20} className="text-gray-500" />
@@ -61,31 +61,3 @@ const Modal = ({ isOpen, onClose, title, children, maxWidth = 'max-w-4xl' }) => 
 };
 
 export default Modal;
-
-
-
-
-
-
-
-const [wiresSelected, setWiresSelected] = useState([
-  {
-    id: 'unique-id-1',
-    type: 'group',
-    presetKey: 'singlePhase120V',
-    presetName: '120V Single Phase (2-wire + ground)',
-    items: [
-      {
-        "Individual wire selections here"
-      }
-    ]
-  },
-  {
-    id: 'unique-id-2', 
-    type: 'single',
-    wireType: 'THWN_2',
-    size: '12',
-    quantity: 2,
-    role: 'phase'
-  }
-]);
