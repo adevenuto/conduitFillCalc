@@ -294,9 +294,9 @@ const ConduitFillCalculator = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-100 via-slate-50 to-gray-100 p-4">
-      <div className="max-w-7xl mx-auto">
-        <div className="bg-white rounded-lg shadow p-4 mb-4 border border-gray-200">
+    <div className="min-h-screen p-4 bg-gradient-to-br from-gray-100 via-slate-50 to-gray-100">
+      <div className="mx-auto max-w-7xl">
+        <div className="p-4 mb-4 bg-white border border-gray-200 rounded-lg shadow">
           <h1 className="text-2xl font-bold text-slate-800">
             NEC Conduit Fill Calculator
           </h1>
@@ -305,9 +305,9 @@ const ConduitFillCalculator = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 text-gray-800">
+        <div className="grid grid-cols-1 gap-4 text-gray-800 lg:grid-cols-2">
           {/* LEFT COLUMN - Form */}
-          <div className="bg-white rounded-lg shadow p-4 border border-gray-200">
+          <div className="p-4 bg-white border border-gray-200 rounded-lg shadow">
             <div className="flex gap-2 mb-4">
               <button
                 onClick={() => setMode('findConduit')}
@@ -332,11 +332,11 @@ const ConduitFillCalculator = () => {
             </div>
 
             <div className="mb-4">
-              <h2 className="text-lg font-semibold mb-2 text-slate-800">Conduit Type</h2>
+              <h2 className="mb-2 text-lg font-semibold text-slate-800">Conduit Type</h2>
               
               {/* Metal Conduits */}
               <div className="mb-3">
-                <h3 className="text-xs font-medium text-gray-600 mb-1">🔩 Metal Conduits</h3>
+                <h3 className="mb-1 text-xs font-medium text-gray-600">🔩 Metal Conduits</h3>
                 <div className="grid grid-cols-3 gap-1">
                   {metalConduits.map(type => (
                     <IconWithTooltip
@@ -361,7 +361,7 @@ const ConduitFillCalculator = () => {
 
               {/* Nonmetallic Conduits */}
               <div className="mb-3">
-                <h3 className="text-xs font-medium text-gray-600 mb-1">🧱 Nonmetallic Conduits</h3>
+                <h3 className="mb-1 text-xs font-medium text-gray-600">🧱 Nonmetallic Conduits</h3>
                 <div className="grid grid-cols-3 gap-1">
                   {nonmetallicConduits.map(type => (
                     <IconWithTooltip
@@ -389,7 +389,7 @@ const ConduitFillCalculator = () => {
 
               {/* Flexible Conduits */}
               <div className="mb-3">
-                <h3 className="text-xs font-medium text-gray-600 mb-1">🌊 Flexible Conduits</h3>
+                <h3 className="mb-1 text-xs font-medium text-gray-600">🌊 Flexible Conduits</h3>
                 <div className="grid grid-cols-2 gap-1">
                   {flexibleConduits.map(type => (
                     <IconWithTooltip
@@ -414,7 +414,7 @@ const ConduitFillCalculator = () => {
 
               {/* Show conduit info for selected type */}
               {selectedConduit.type && conduitTypes[selectedConduit.type] && (
-                <div className="bg-gray-50 border border-gray-300 rounded-lg p-2 mt-2">
+                <div className="p-2 mt-2 border border-gray-300 rounded-lg bg-gray-50">
                   <div className="text-xs">
                     <div className="font-medium text-slate-800">
                       {conduitTypes[selectedConduit.type].name}
@@ -422,7 +422,7 @@ const ConduitFillCalculator = () => {
                     <div className="text-gray-600 mt-0.5">
                       {conduitTypes[selectedConduit.type].description}
                     </div>
-                    <div className="text-blue-600 text-xs mt-1">
+                    <div className="mt-1 text-xs text-blue-600">
                       {conduitTypes[selectedConduit.type].article}
                     </div>
                   </div>
@@ -431,13 +431,13 @@ const ConduitFillCalculator = () => {
 
               {mode === 'checkFit' && (
                 <div className="mt-3">
-                  <label className="block text-sm font-medium text-slate-800 mb-1">
+                  <label className="block mb-1 text-sm font-medium text-slate-800">
                     Conduit Size
                   </label>
                   <select
                     value={selectedConduit.size}
                     onChange={(e) => setSelectedConduit({ ...selectedConduit, size: e.target.value })}
-                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-800"
+                    className="w-full px-3 py-2 text-sm text-gray-800 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   >
                     {Object.keys(conduitTypes[selectedConduit.type]?.sizes || {}).map(size => (
                       <option key={size} value={size}>{size}"</option>
@@ -452,7 +452,7 @@ const ConduitFillCalculator = () => {
                 <h2 className="text-lg font-semibold text-slate-800">Wires</h2>
                 <button
                   onClick={() => setShowPresetsModal(true)}
-                  className="flex items-center gap-1 text-xs px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  className="flex items-center gap-1 px-3 py-2 text-xs text-white transition-colors bg-blue-600 rounded-lg hover:bg-blue-700"
                 >
                   <Plus size={14} />
                   {presetInstances.length > 0 ? 'Manage Presets' : 'Browse Presets'}
@@ -461,8 +461,8 @@ const ConduitFillCalculator = () => {
               
               {/* Show initial wire form when no wires exist */}
               {!hasAnyWires && (
-                <div className="bg-white border rounded-lg p-3 mb-3">
-                  <p className="text-xs text-blue-800 mb-2">Configure your first wire:</p>
+                <div className="p-3 mb-3 bg-white border rounded-lg">
+                  <p className="mb-2 text-xs text-blue-800">Configure your first wire:</p>
                   <div className="flex gap-2">
                     <select
                       value={initialWireType}
@@ -506,7 +506,7 @@ const ConduitFillCalculator = () => {
                         value={initialWireSize}
                         onChange={(e) => setInitialWireSize(e.target.value)}
                         placeholder="0.0123"
-                        className="w-20 px-2 py-2 text-xs border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 bg-yellow-50 text-amber-900 text-center"
+                        className="w-20 px-2 py-2 text-xs text-center border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 bg-yellow-50 text-amber-900"
                         title="Wire area in square inches"
                       />
                     ) : (
@@ -514,7 +514,7 @@ const ConduitFillCalculator = () => {
                         value={initialWireSize}
                         onChange={(e) => setInitialWireSize(e.target.value)}
                         disabled={!initialWireType}
-                        className="w-20 px-2 py-2 text-xs border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 bg-white text-gray-800 disabled:bg-gray-100 disabled:text-gray-400"
+                        className="w-20 px-2 py-2 text-xs text-gray-800 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 disabled:bg-gray-100 disabled:text-gray-400"
                       >
                         {initialWireType ? 
                           Object.keys(wireTypes[initialWireType].areas).map(size => (
@@ -534,7 +534,7 @@ const ConduitFillCalculator = () => {
                       value={initialWireQuantity}
                       onChange={(e) => setInitialWireQuantity(parseInt(e.target.value) || 1)}
                       disabled={!initialWireType}
-                      className="w-14 px-2 py-2 text-xs border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 bg-white text-gray-800 disabled:bg-gray-100 disabled:text-gray-400"
+                      className="px-2 py-2 text-xs text-gray-800 bg-white border border-gray-300 rounded-lg w-14 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 disabled:bg-gray-100 disabled:text-gray-400"
                       placeholder="Qty"
                     />
 
@@ -542,7 +542,7 @@ const ConduitFillCalculator = () => {
                       value={initialWireRole}
                       onChange={(e) => setInitialWireRole(e.target.value)}
                       disabled={!initialWireType}
-                      className="w-20 px-2 py-2 text-xs border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 bg-white text-gray-800 disabled:bg-gray-100 disabled:text-gray-400"
+                      className="w-20 px-2 py-2 text-xs text-gray-800 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 disabled:bg-gray-100 disabled:text-gray-400"
                     >
                       <option value="phase">Phase</option>
                       <option value="neutral">Neutral</option>
@@ -553,7 +553,7 @@ const ConduitFillCalculator = () => {
                     <button
                       onClick={addWireFromForm}
                       disabled={!initialWireType}
-                      className="px-3 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-500 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
+                      className="px-3 py-2 text-white transition-colors rounded-lg bg-emerald-600 hover:bg-emerald-500 disabled:bg-gray-300 disabled:cursor-not-allowed"
                     >
                       <Plus size={16} />
                     </button>
@@ -567,7 +567,7 @@ const ConduitFillCalculator = () => {
                 if (!preset) return null;
 
                 return (
-                  <div key={instance.id} className="mb-4 border border-blue-200 rounded-lg p-3 bg-blue-50">
+                  <div key={instance.id} className="p-3 mb-4 border border-blue-200 rounded-lg bg-blue-50">
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2">
                         <span className="text-sm font-semibold text-blue-800">
@@ -576,7 +576,7 @@ const ConduitFillCalculator = () => {
                       </div>
                       <button
                         onClick={() => removePresetInstance(instance.id)}
-                        className="text-red-600 hover:bg-red-100 p-1 rounded"
+                        className="p-1 text-red-600 rounded hover:bg-red-100"
                         title="Remove entire preset"
                       >
                         <X size={16} />
@@ -608,9 +608,9 @@ const ConduitFillCalculator = () => {
                     {[...Array(instance.quantity)].map((_, circuitIdx) => (
                       <div key={circuitIdx}>
                         {circuitIdx > 0 && <hr className="my-2 border-blue-300" />}
-                        <div className="text-xs text-blue-600 mb-1">Circuit {circuitIdx + 1}:</div>
+                        <div className="mb-1 text-xs text-blue-600">Circuit {circuitIdx + 1}:</div>
                         {preset.wires.map((wire, wireIdx) => (
-                          <div key={wireIdx} className="flex justify-between text-xs text-gray-700 ml-2 mb-1">
+                          <div key={wireIdx} className="flex justify-between mb-1 ml-2 text-xs text-gray-700">
                             <span>
                               {wire.quantity}× {wireTypes[wire.type]?.label || wire.type} #{wire.size}
                             </span>
@@ -633,7 +633,7 @@ const ConduitFillCalculator = () => {
               {individualWires.length > 0 && (
                 <div className="mb-4">
                   {presetInstances.length > 0 && (
-                    <div className="text-xs text-gray-600 mb-2 font-medium">Individual Wires:</div>
+                    <div className="mb-2 text-xs font-medium text-gray-600">Individual Wires:</div>
                   )}
                   {individualWires.map((wire) => {
                     const availableSizes = Object.keys(wireTypes[wire.type]?.areas || {});
@@ -682,14 +682,14 @@ const ConduitFillCalculator = () => {
                             value={wire.customArea || ''}
                             onChange={(e) => updateIndividualWire(wire.id, 'customArea', parseFloat(e.target.value) || 0)}
                             placeholder="0.0123"
-                            className="w-20 px-2 py-2 text-xs border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-yellow-50 text-gray-900 text-center"
+                            className="w-20 px-2 py-2 text-xs text-center text-gray-900 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-yellow-50"
                             title="Wire area in square inches"
                           />
                         ) : (
                           <select
                             value={wire.size}
                             onChange={(e) => updateIndividualWire(wire.id, 'size', e.target.value)}
-                            className="w-20 px-2 py-2 text-xs border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-800"
+                            className="w-20 px-2 py-2 text-xs text-gray-800 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                           >
                             {availableSizes.map(size => (
                               <option key={size} value={size}>
@@ -705,14 +705,14 @@ const ConduitFillCalculator = () => {
                           max="50"
                           value={wire.quantity}
                           onChange={(e) => updateIndividualWire(wire.id, 'quantity', e.target.value)}
-                          className="w-14 px-2 py-2 text-xs border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-800"
+                          className="px-2 py-2 text-xs text-gray-800 bg-white border border-gray-300 rounded-lg w-14 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                           placeholder="Qty"
                         />
 
                         <select
                           value={wire.role}
                           onChange={(e) => updateIndividualWire(wire.id, 'role', e.target.value)}
-                          className="w-20 px-2 py-2 text-xs border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-800"
+                          className="w-20 px-2 py-2 text-xs text-gray-800 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         >
                           <option value="phase">Phase</option>
                           <option value="neutral">Neutral</option>
@@ -722,7 +722,7 @@ const ConduitFillCalculator = () => {
 
                         <button
                           onClick={() => removeIndividualWire(wire.id)}
-                          className="px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-500 transition-colors"
+                          className="px-3 py-2 text-white transition-colors bg-red-600 rounded-lg hover:bg-red-500"
                         >
                           <X size={16} />
                         </button>
@@ -746,8 +746,8 @@ const ConduitFillCalculator = () => {
               </button>
             </div>
 
-            <div className="bg-gray-50 border border-gray-300 rounded-lg p-3">
-              <h4 className="text-sm font-semibold text-slate-800 mb-1">📋 NEC References</h4>
+            <div className="p-3 border border-gray-300 rounded-lg bg-gray-50">
+              <h4 className="mb-1 text-sm font-semibold text-slate-800">📋 NEC References</h4>
               <ul className="text-xs text-gray-700 space-y-0.5">
                 <li>• Table 1: Fill percentages</li>
                 <li>• Table 4: Conduit dimensions</li>
@@ -757,16 +757,16 @@ const ConduitFillCalculator = () => {
           </div>
 
           {/* RIGHT COLUMN - Results */}
-          <div className="bg-white rounded-lg shadow p-4 border border-gray-200">
+          <div className="p-4 bg-white border border-gray-200 rounded-lg shadow">
             {results ? (
               <div>
-                <h2 className="text-xl font-bold text-slate-800 mb-3">Results</h2>
+                <h2 className="mb-3 text-xl font-bold text-slate-800">Results</h2>
 
-                <div className="bg-blue-50 border rounded-lg p-3 mb-3">
+                <div className="p-3 mb-3 border rounded-lg bg-blue-50">
                   <div className="flex items-start gap-2">
                     <Info className="text-blue-600 mt-0.5 flex-shrink-0" size={20} />
                     <div>
-                      <h3 className="font-semibold text-sm text-blue-900 mb-1">NEC Fill Rule</h3>
+                      <h3 className="mb-1 text-sm font-semibold text-blue-900">NEC Fill Rule</h3>
                       <p className="text-xs text-blue-800">
                         {results.totalWireCount} conductor{results.totalWireCount !== 1 ? 's' : ''} = Max {(results.fillPercent * 100).toFixed(0)}% fill
                       </p>
@@ -776,11 +776,11 @@ const ConduitFillCalculator = () => {
                 </div>
 
                 {results.mixedInsulation && (
-                  <div className="bg-yellow-50 border border-yellow-300 rounded-lg p-3 mb-3">
+                  <div className="p-3 mb-3 border border-yellow-300 rounded-lg bg-yellow-50">
                     <div className="flex items-start gap-2">
                       <AlertCircle className="text-yellow-600 mt-0.5 flex-shrink-0" size={18} />
                       <div>
-                        <h3 className="font-semibold text-sm text-yellow-900 mb-1">Mixed Insulation Types</h3>
+                        <h3 className="mb-1 text-sm font-semibold text-yellow-900">Mixed Insulation Types</h3>
                         <p className="text-xs text-yellow-800">
                           Different wire types detected. Allowed by NEC, but may complicate installation and pulling.
                         </p>
@@ -790,7 +790,7 @@ const ConduitFillCalculator = () => {
                 )}
 
                 <div className="mb-3">
-                  <h3 className="text-sm font-semibold mb-2 text-slate-800">Wire Breakdown</h3>
+                  <h3 className="mb-2 text-sm font-semibold text-slate-800">Wire Breakdown</h3>
                   <div className="overflow-x-auto">
                     <table className="w-full text-xs">
                       <thead className="bg-gray-100">
@@ -833,7 +833,7 @@ const ConduitFillCalculator = () => {
                                 <td colSpan="4" className="px-2 py-1 text-xs font-semibold text-blue-800">
                                   📋 {group.presetName} - Circuit {group.circuitNumber}
                                 </td>
-                                <td className="px-2 py-1 text-right text-xs font-semibold text-blue-800">
+                                <td className="px-2 py-1 text-xs font-semibold text-right text-blue-800">
                                   {group.totalArea.toFixed(4)} in²
                                 </td>
                               </tr>
@@ -844,7 +844,7 @@ const ConduitFillCalculator = () => {
                                 <tr key={`${group.presetName}-${group.circuitNumber}-${idx}`} 
                                     className={`border-t border-blue-200 bg-blue-50 ${wire.role === 'ground' ? 'bg-emerald-100' : ''}`}>
                                   <td className={`px-2 py-1 pl-4 ${wire.role === 'ground' ? 'text-emerald-700 font-medium' : 'text-gray-800'}`}>
-                                    <span className="text-blue-400 mr-1">▸</span>
+                                    <span className="mr-1 text-blue-400">▸</span>
                                     {wire.role === 'ground' ? '⚡ ' : ''}{wire.wireLabel}
                                   </td>
                                   <td className="px-2 py-1 text-gray-800">
@@ -852,11 +852,11 @@ const ConduitFillCalculator = () => {
                                       ? <span><span className="text-blue-600">🔧</span> Custom ({wire.areaEach.toFixed(4)}in²)</span>
                                       : wire.size.includes('/') ? wire.size : `#${wire.size}`}
                                   </td>
-                                  <td className="px-2 py-1 capitalize text-gray-600">
+                                  <td className="px-2 py-1 text-gray-600 capitalize">
                                     {wire.role === 'ground' ? 'EGC' : wire.role}
                                   </td>
                                   <td className="px-2 py-1 text-right text-gray-800">{wire.quantity}</td>
-                                  <td className="px-2 py-1 text-right font-semibold text-blue-600">
+                                  <td className="px-2 py-1 font-semibold text-right text-blue-600">
                                     {wire.areaTotal.toFixed(4)}
                                   </td>
                                 </tr>
@@ -872,7 +872,7 @@ const ConduitFillCalculator = () => {
                                 <td colSpan="4" className="px-2 py-1 text-xs font-semibold text-gray-700">
                                   Individual Wires
                                 </td>
-                                <td className="px-2 py-1 text-right text-xs font-semibold text-gray-700">
+                                <td className="px-2 py-1 text-xs font-semibold text-right text-gray-700">
                                   {individualTotal.toFixed(4)} in²
                                 </td>
                               </tr>
@@ -883,7 +883,7 @@ const ConduitFillCalculator = () => {
                             rows.push(
                               <tr key={`individual-${i}`} className={`border-t border-gray-200 ${wire.role === 'ground' ? 'bg-emerald-50' : ''}`}>
                                 <td className={`px-2 py-1 ${Object.keys(presetGroups).length > 0 ? 'pl-4' : ''} ${wire.role === 'ground' ? 'text-emerald-700 font-medium' : 'text-gray-800'}`}>
-                                  {Object.keys(presetGroups).length > 0 && <span className="text-gray-400 mr-1">▸</span>}
+                                  {Object.keys(presetGroups).length > 0 && <span className="mr-1 text-gray-400">▸</span>}
                                   {wire.role === 'ground' ? '⚡ ' : ''}{wire.wireLabel}
                                 </td>
                                 <td className="px-2 py-1 text-gray-800">
@@ -891,11 +891,11 @@ const ConduitFillCalculator = () => {
                                     ? <span><span className="text-blue-600">🔧</span> Custom ({wire.areaEach.toFixed(4)}in²)</span>
                                     : wire.size.includes('/') ? wire.size : `#${wire.size}`}
                                 </td>
-                                <td className="px-2 py-1 capitalize text-gray-600">
+                                <td className="px-2 py-1 text-gray-600 capitalize">
                                   {wire.role === 'ground' ? 'EGC' : wire.role}
                                 </td>
                                 <td className="px-2 py-1 text-right text-gray-800">{wire.quantity}</td>
-                                <td className="px-2 py-1 text-right font-semibold text-blue-600">
+                                <td className="px-2 py-1 font-semibold text-right text-blue-600">
                                   {wire.areaTotal.toFixed(4)}
                                 </td>
                               </tr>
@@ -903,7 +903,7 @@ const ConduitFillCalculator = () => {
                           });
                           
                           rows.push(
-                            <tr key="total" className="border-t-2 border-blue-400 bg-gray-50 font-bold">
+                            <tr key="total" className="font-bold border-t-2 border-blue-400 bg-gray-50">
                               <td colSpan="4" className="px-2 py-1 text-right text-gray-800">Total:</td>
                               <td className="px-2 py-1 text-right text-blue-600">{results.totalWireArea.toFixed(4)} in²</td>
                             </tr>
@@ -919,9 +919,9 @@ const ConduitFillCalculator = () => {
                 {results.mode === 'findConduit' ? (
                   <div>
                     {results.minSize ? (
-                      <div className="bg-emerald-50 border border-emerald-300 rounded-lg p-4">
+                      <div className="p-4 border rounded-lg bg-emerald-50 border-emerald-300">
                         <div className="flex items-start gap-2 mb-3">
-                          <CheckCircle className="text-emerald-600 flex-shrink-0" size={24} />
+                          <CheckCircle className="flex-shrink-0 text-emerald-600" size={24} />
                           <div>
                             <h3 className="text-lg font-bold text-emerald-900">
                               {results.minSize}" {results.conduitType}
@@ -933,26 +933,26 @@ const ConduitFillCalculator = () => {
                         </div>
 
                         <div className="grid grid-cols-2 gap-2 mb-3">
-                          <div className="bg-white p-2 rounded border border-gray-200">
-                            <div className="text-xs text-gray-700 font-medium">Total Area</div>
+                          <div className="p-2 bg-white border border-gray-200 rounded">
+                            <div className="text-xs font-medium text-gray-700">Total Area</div>
                             <div className="text-sm font-bold text-gray-900">
                               {results.minSizeData.total.toFixed(3)} in²
                             </div>
                           </div>
-                          <div className="bg-white p-2 rounded border border-gray-200">
-                            <div className="text-xs text-gray-700 font-medium">Allowable</div>
+                          <div className="p-2 bg-white border border-gray-200 rounded">
+                            <div className="text-xs font-medium text-gray-700">Allowable</div>
                             <div className="text-sm font-bold text-gray-900">
                               {results.minSizeData.allowableFill.toFixed(3)} in²
                             </div>
                           </div>
-                          <div className="bg-white p-2 rounded border border-gray-200">
-                            <div className="text-xs text-gray-700 font-medium">Wire Area</div>
+                          <div className="p-2 bg-white border border-gray-200 rounded">
+                            <div className="text-xs font-medium text-gray-700">Wire Area</div>
                             <div className="text-sm font-bold text-gray-900">
                               {results.minSizeData.actualFill.toFixed(3)} in²
                             </div>
                           </div>
-                          <div className="bg-white p-2 rounded border border-gray-200">
-                            <div className="text-xs text-gray-700 font-medium">Fill %</div>
+                          <div className="p-2 bg-white border border-gray-200 rounded">
+                            <div className="text-xs font-medium text-gray-700">Fill %</div>
                             <div className="text-sm font-bold text-emerald-600">
                               {results.minSizeData.fillPercentage.toFixed(1)}%
                             </div>
@@ -960,8 +960,8 @@ const ConduitFillCalculator = () => {
                         </div>
 
                         <div>
-                          <div className="text-xs text-gray-800 font-medium mb-1">Fill Visualization:</div>
-                          <div className="w-full bg-gray-200 rounded-full h-6 overflow-hidden">
+                          <div className="mb-1 text-xs font-medium text-gray-800">Fill Visualization:</div>
+                          <div className="w-full h-6 overflow-hidden bg-gray-200 rounded-full">
                             <div
                               className={`h-full ${getFillColor(results.minSizeData.fillPercentage)} transition-all duration-500 flex items-center justify-center text-white font-semibold text-xs`}
                               style={{ width: `${results.minSizeData.fillPercentage}%` }}
@@ -972,11 +972,11 @@ const ConduitFillCalculator = () => {
                         </div>
                       </div>
                     ) : (
-                      <div className="bg-red-50 border border-red-300 rounded-lg p-4">
+                      <div className="p-4 border border-red-300 rounded-lg bg-red-50">
                         <div className="flex items-start gap-2">
-                          <AlertCircle className="text-red-600 flex-shrink-0" size={24} />
+                          <AlertCircle className="flex-shrink-0 text-red-600" size={24} />
                           <div>
-                            <h3 className="text-lg font-bold text-red-900 mb-1">
+                            <h3 className="mb-1 text-lg font-bold text-red-900">
                               No Suitable Conduit
                             </h3>
                             <p className="text-xs text-red-700">
@@ -992,9 +992,9 @@ const ConduitFillCalculator = () => {
                     <div className={`${results.compliant ? 'bg-emerald-50 border-emerald-300' : 'bg-red-50 border-red-300'} border rounded-lg p-4`}>
                       <div className="flex items-start gap-2 mb-3">
                         {results.compliant ? (
-                          <CheckCircle className="text-emerald-600 flex-shrink-0" size={24} />
+                          <CheckCircle className="flex-shrink-0 text-emerald-600" size={24} />
                         ) : (
-                          <AlertCircle className="text-red-600 flex-shrink-0" size={24} />
+                          <AlertCircle className="flex-shrink-0 text-red-600" size={24} />
                         )}
                         <div>
                           <h3 className={`text-lg font-bold mb-1 ${results.compliant ? 'text-emerald-900' : 'text-red-900'}`}>
@@ -1008,26 +1008,26 @@ const ConduitFillCalculator = () => {
                       </div>
 
                       <div className="grid grid-cols-2 gap-2 mb-3">
-                        <div className="bg-white p-2 rounded border border-gray-200">
-                          <div className="text-xs text-gray-700 font-medium">Total Area</div>
+                        <div className="p-2 bg-white border border-gray-200 rounded">
+                          <div className="text-xs font-medium text-gray-700">Total Area</div>
                           <div className="text-sm font-bold text-gray-900">
                             {results.conduitData.total.toFixed(3)} in²
                           </div>
                         </div>
-                        <div className="bg-white p-2 rounded border border-gray-200">
-                          <div className="text-xs text-gray-700 font-medium">Allowable</div>
+                        <div className="p-2 bg-white border border-gray-200 rounded">
+                          <div className="text-xs font-medium text-gray-700">Allowable</div>
                           <div className="text-sm font-bold text-gray-900">
                             {results.allowableFill.toFixed(3)} in²
                           </div>
                         </div>
-                        <div className="bg-white p-2 rounded border border-gray-200">
-                          <div className="text-xs text-gray-700 font-medium">Wire Area</div>
+                        <div className="p-2 bg-white border border-gray-200 rounded">
+                          <div className="text-xs font-medium text-gray-700">Wire Area</div>
                           <div className="text-sm font-bold text-gray-900">
                             {results.totalWireArea.toFixed(3)} in²
                           </div>
                         </div>
-                        <div className="bg-white p-2 rounded border border-gray-200">
-                          <div className="text-xs text-gray-700 font-medium">Fill %</div>
+                        <div className="p-2 bg-white border border-gray-200 rounded">
+                          <div className="text-xs font-medium text-gray-700">Fill %</div>
                           <div className={`text-sm font-bold ${results.compliant ? 'text-emerald-600' : 'text-red-600'}`}>
                             {results.actualFillPercent.toFixed(1)}%
                           </div>
@@ -1035,8 +1035,8 @@ const ConduitFillCalculator = () => {
                       </div>
 
                       <div>
-                        <div className="text-xs text-gray-800 font-medium mb-1">Fill Visualization:</div>
-                        <div className="w-full bg-gray-200 rounded-full h-6 overflow-hidden relative">
+                        <div className="mb-1 text-xs font-medium text-gray-800">Fill Visualization:</div>
+                        <div className="relative w-full h-6 overflow-hidden bg-gray-200 rounded-full">
                           <div
                             className={`h-full ${getFillColor(results.actualFillPercent)} transition-all duration-500 flex items-center justify-center text-white font-semibold text-xs`}
                             style={{ width: `${Math.min(results.actualFillPercent, 100)}%` }}
@@ -1055,7 +1055,7 @@ const ConduitFillCalculator = () => {
                       </div>
 
                       {!results.compliant && (
-                        <div className="mt-3 bg-yellow-50 border border-yellow-300 rounded p-2">
+                        <div className="p-2 mt-3 border border-yellow-300 rounded bg-yellow-50">
                           <p className="text-xs text-yellow-800">
                             <strong>Tip:</strong> Use larger conduit or fewer wires
                           </p>
@@ -1066,24 +1066,24 @@ const ConduitFillCalculator = () => {
                 )}
 
                 {/* Clear Actions */}
-                <div className="mt-4 pt-3 border-t border-gray-200">
+                <div className="pt-3 mt-4 border-t border-gray-200">
                   <div className="flex gap-2">
                     <button
                       onClick={clearAllWires}
-                      className="flex-1 flex items-center justify-center gap-2 py-2 px-3 bg-slate-600 text-gray-100 text-sm rounded-lg hover:bg-slate-500 transition-colors"
+                      className="flex items-center justify-center flex-1 gap-2 px-3 py-2 text-sm text-gray-100 transition-colors rounded-lg bg-slate-600 hover:bg-slate-500"
                     >
                       <Trash2 size={16} />
                       Clear Wires
                     </button>
                     <button
                       onClick={resetAll}
-                      className="flex-1 flex items-center justify-center gap-2 py-2 px-3 bg-red-600 text-white text-sm rounded-lg hover:bg-red-500 transition-colors"
+                      className="flex items-center justify-center flex-1 gap-2 px-3 py-2 text-sm text-white transition-colors bg-red-600 rounded-lg hover:bg-red-500"
                     >
                       <RotateCcw size={16} />
                       Reset All
                     </button>
                   </div>
-                  <p className="text-xs text-gray-600 mt-1 text-center">
+                  <p className="mt-1 text-xs text-center text-gray-600">
                     Clear wires only or reset everything to start over
                   </p>
                 </div>
@@ -1093,15 +1093,15 @@ const ConduitFillCalculator = () => {
                 <div className="text-center">
                   <Info size={48} className="mx-auto mb-2 opacity-50" />
                   <p className="text-sm font-semibold">Add wires to see results</p>
-                  <p className="text-xs mt-1">Click "Add Wire" or use a preset</p>
+                  <p className="mt-1 text-xs">Click "Add Wire" or use a preset</p>
                 </div>
               </div>
             )}
           </div>
         </div>
 
-        <div className="mt-4 text-center text-xs text-gray-700 bg-white rounded-lg shadow p-3 border border-gray-200">
-          <p>⚠️ Reference only. Consult a licensed electrician and verify with local code.</p>
+        <div className="p-3 mt-4 text-xs text-center text-gray-700 bg-white border border-gray-200 rounded-lg shadow">
+          <p>⚠️ Reference only. Consult a licensed electrician and verify with local code...</p>
         </div>
       </div>
       
