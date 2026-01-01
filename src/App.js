@@ -1106,10 +1106,6 @@ const ConduitFillCalculator = () => {
 
         {/* SEO-rich footer section */}
         <footer className="mt-4 space-y-4">
-          <div className="p-3 text-xs text-center text-gray-700 bg-white border border-gray-200 rounded-lg shadow">
-            <p>⚠️ Reference only. Consult a licensed electrician and verify with local code requirements.</p>
-          </div>
-          
           {/* About Section - SEO Content */}
           <article className="p-6 bg-white border border-gray-200 rounded-lg shadow">
             <h2 className="mb-3 text-xl font-bold text-slate-800">
