@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, X, AlertCircle, CheckCircle, Info, Trash2, RotateCcw, Minus } from 'lucide-react';
+import { Plus, X, AlertCircle, CheckCircle, Info, Trash2, RotateCcw, Minus, ChevronDown, ChevronUp } from 'lucide-react';
 import { wireTypes, conduitTypes, getConduitsByCategory, getFillRule, wirePresets } from './utils/nec/index.js';
 import { WireIcon, ConduitIcon, IconWithTooltip } from './components/Icons.js';
 import PresetsModal from './components/PresetsModal.js';
@@ -28,6 +28,9 @@ const ConduitFillCalculator = () => {
   const [initialWireSize, setInitialWireSize] = useState('12');
   const [initialWireQuantity, setInitialWireQuantity] = useState(1);
   const [initialWireRole, setInitialWireRole] = useState('phase');
+  
+  // Footer expansion state
+  const [isFooterExpanded, setIsFooterExpanded] = useState(false);
 
   // Update presets from modal - replaces all preset instances
   const handleUpdatePresets = (selectedPresets) => {
@@ -750,13 +753,22 @@ const ConduitFillCalculator = () => {
               </button>
             </div>
 
-            <div className="p-3 border border-gray-300 rounded-lg bg-gray-50">
+            <div className="p-3 mb-4 border border-gray-300 rounded-lg bg-gray-50">
               <h4 className="mb-1 text-sm font-semibold text-slate-800">📋 NEC References</h4>
               <ul className="text-xs text-gray-700 space-y-0.5">
                 <li>• Table 1: Fill percentages</li>
                 <li>• Table 4: Conduit dimensions</li>
                 <li>• Table 5: Wire areas</li>
               </ul>
+            </div>
+
+            <div className="p-3 border border-yellow-300 rounded-lg bg-yellow-50">
+              <h3 className="mb-2 font-semibold text-yellow-900">⚠️ Important Disclaimer</h3>
+              <p className="text-xs leading-relaxed text-yellow-800">
+                This calculator is provided as a reference tool only. Always verify calculations with current NEC code books, 
+                consult with a licensed electrician, and comply with local electrical codes and regulations. The creators of 
+                this tool assume no liability for any installations based on these calculations.
+              </p>
             </div>
           </div>
 
@@ -1107,12 +1119,40 @@ const ConduitFillCalculator = () => {
         {/* SEO-rich footer section */}
         <footer className="mt-4 space-y-4">
           {/* About Section - SEO Content */}
-          <article className="p-6 bg-white border border-gray-200 rounded-lg shadow">
-            <h2 className="mb-3 text-xl font-bold text-slate-800">
-              About This Electrical Conduit Fill Calculator
-            </h2>
+          <article className="bg-white border border-gray-200 rounded-lg shadow">
+            {/* Toggle Button */}
+            <button
+              onClick={() => setIsFooterExpanded(!isFooterExpanded)}
+              className="flex items-center justify-between w-full p-4 text-left transition-colors hover:bg-gray-50"
+              aria-expanded={isFooterExpanded}
+              aria-controls="seo-footer-content"
+            >
+              <h2 className="text-xl font-bold text-slate-800">
+                About This Electrical Conduit Fill Calculator
+              </h2>
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-gray-600">
+                  {isFooterExpanded ? 'Collapse' : 'Expand'} Details
+                </span>
+                {isFooterExpanded ? (
+                  <ChevronUp className="text-gray-600" size={20} />
+                ) : (
+                  <ChevronDown className="text-gray-600" size={20} />
+                )}
+              </div>
+            </button>
             
-            <div className="space-y-4 text-sm text-gray-700">
+            {/* Collapsible Content */}
+            <div
+              id="seo-footer-content"
+              className={`transition-all duration-300 ease-in-out overflow-hidden ${
+                isFooterExpanded 
+                  ? 'max-h-[2000px] opacity-100' 
+                  : 'max-h-0 opacity-0'
+              }`}
+              aria-hidden={!isFooterExpanded}
+            >
+              <div className="p-6 pt-0 space-y-4 text-sm text-gray-700">
               <section>
                 <h3 className="mb-2 font-semibold text-slate-800">What is NEC Conduit Fill?</h3>
                 <p className="leading-relaxed">
@@ -1156,19 +1196,6 @@ const ConduitFillCalculator = () => {
               </section>
               
               <section>
-                <h3 className="mb-2 font-semibold text-slate-800">Key Features for Electrical Professionals</h3>
-                <ul className="ml-4 space-y-1 list-disc">
-                  <li>Instant NEC-compliant conduit fill calculations</li>
-                  <li>Support for all common wire types (THHN, THWN, XHHW, etc.)</li>
-                  <li>Visual fill percentage indicators</li>
-                  <li>Preset wire configurations for common applications</li>
-                  <li>Code compliance verification</li>
-                  <li>Custom wire area calculations</li>
-                  <li>Mobile-friendly responsive design</li>
-                </ul>
-              </section>
-              
-              <section>
                 <h3 className="mb-2 font-semibold text-slate-800">Understanding NEC Fill Percentages</h3>
                 <p className="leading-relaxed">
                   According to NEC Table 1, the maximum conduit fill depends on the number of conductors:
@@ -1205,15 +1232,7 @@ const ConduitFillCalculator = () => {
                   this tool assume no liability for any installations based on these calculations.
                 </p>
               </section>
-              
-              <section>
-                <h3 className="mb-2 font-semibold text-slate-800">Related Electrical Calculations</h3>
-                <p className="text-xs leading-relaxed text-gray-600">
-                  Keywords: electrical conduit sizing, wire fill percentage calculator, NEC Chapter 9 calculator, 
-                  conduit fill chart, electrical wiring calculator, conductor fill calculation, EMT conduit fill, 
-                  PVC conduit calculator, electrical installation planning, wire sizing tool, conduit fill specifications
-                </p>
-              </section>
+              </div>
             </div>
           </article>
         </footer>
