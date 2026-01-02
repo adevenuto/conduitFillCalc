@@ -97,10 +97,11 @@ const PresetsModal = ({ isOpen, onClose, currentPresetInstances, onUpdatePresets
         className={`bg-white border-2 rounded-lg p-3 hover:shadow-md transition-all cursor-pointer group ${
           isSelected ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-blue-400'
         }`}
+        onClick={() => togglePreset(presetKey)}
       >
         <div 
           className="flex items-start justify-between mb-2"
-          onClick={() => togglePreset(presetKey)}
+          // onClick={() => togglePreset(presetKey)}
         >
           <h4 className={`font-semibold text-sm transition-colors ${
             isSelected ? 'text-blue-700' : 'text-slate-800 group-hover:text-blue-700'
@@ -111,16 +112,16 @@ const PresetsModal = ({ isOpen, onClose, currentPresetInstances, onUpdatePresets
             {isSelected ? (
               <Check size={18} className="text-blue-500" />
             ) : (
-              <Plus size={18} className="text-gray-400 group-hover:text-blue-500 transition-colors" />
+              <Plus size={18} className="text-gray-400 transition-colors group-hover:text-blue-500" />
             )}
           </div>
         </div>
         
-        <div className="text-xs text-gray-600 mb-2">
+        <div className="mb-2 text-xs text-gray-600">
           {wireCount} conductor{wireCount !== 1 ? 's' : ''} • {uniqueTypes} wire type{uniqueTypes !== 1 ? 's' : ''}
         </div>
         
-        <div className="space-y-1 mb-3">
+        <div className="mb-3 space-y-1">
           {preset.wires.map((wire, index) => (
             <div key={index} className="flex justify-between text-xs">
               <span className="text-gray-700">
@@ -175,7 +176,7 @@ const PresetsModal = ({ isOpen, onClose, currentPresetInstances, onUpdatePresets
     return (
       <div className="mb-6">
         <div className="mb-3">
-          <h3 className="text-lg font-bold text-slate-800 mb-1">
+          <h3 className="mb-1 text-lg font-bold text-slate-800">
             {category.title}
           </h3>
           <p className="text-sm text-gray-600">
@@ -183,7 +184,7 @@ const PresetsModal = ({ isOpen, onClose, currentPresetInstances, onUpdatePresets
           </p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
           {category.presets.map(presetKey => {
             const preset = wirePresets[presetKey];
             if (!preset) return null;
@@ -212,12 +213,12 @@ const PresetsModal = ({ isOpen, onClose, currentPresetInstances, onUpdatePresets
       maxWidth="max-w-5xl"
     >
       <div className="space-y-6">
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-          <h3 className="font-semibold text-blue-900 mb-2">📋 Quick Start Guide</h3>
-          <p className="text-sm text-blue-800 mb-2">
+        <div className="p-4 border border-blue-200 rounded-lg bg-blue-50">
+          <h3 className="mb-2 font-semibold text-blue-900">📋 Quick Start Guide</h3>
+          <p className="mb-2 text-sm text-blue-800">
             Select presets and adjust quantities. When you click Apply, your current preset selections will be replaced.
           </p>
-          <ul className="text-xs text-blue-700 space-y-1">
+          <ul className="space-y-1 text-xs text-blue-700">
             <li>• Click presets to select them, then adjust quantities with +/- buttons</li>
             <li>• You can select multiple presets at once</li>
             <li>• Presets are based on common electrical installations</li>
@@ -229,7 +230,7 @@ const PresetsModal = ({ isOpen, onClose, currentPresetInstances, onUpdatePresets
           <CategorySection key={key} category={category} />
         ))}
         
-        <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 text-center">
+        <div className="p-4 text-center border border-gray-200 rounded-lg bg-gray-50">
           <p className="text-sm text-gray-600">
             Don't see what you need? You can always add individual wires manually after closing this dialog.
           </p>
@@ -237,7 +238,7 @@ const PresetsModal = ({ isOpen, onClose, currentPresetInstances, onUpdatePresets
       </div>
 
       {/* Selection Footer */}
-      <div className="sticky bottom-0 bg-white border-t border-gray-200 p-4 mt-4">
+      <div className="sticky bottom-0 p-4 mt-4 bg-white border-t border-gray-200">
         <div className="flex items-center justify-between">
           <div className="text-sm text-gray-700">
             {Object.keys(selectedPresets).length > 0 ? (
@@ -245,7 +246,7 @@ const PresetsModal = ({ isOpen, onClose, currentPresetInstances, onUpdatePresets
                 <span className="font-semibold">
                   {Object.keys(selectedPresets).length} preset{Object.keys(selectedPresets).length !== 1 ? 's' : ''} selected
                 </span>
-                <span className="text-gray-500 ml-2">
+                <span className="ml-2 text-gray-500">
                   (Total: {Object.values(selectedPresets).reduce((sum, { quantity }) => sum + quantity, 0)} circuit{Object.values(selectedPresets).reduce((sum, { quantity }) => sum + quantity, 0) !== 1 ? 's' : ''})
                 </span>
               </>
@@ -256,14 +257,14 @@ const PresetsModal = ({ isOpen, onClose, currentPresetInstances, onUpdatePresets
           <div className="flex items-center gap-2">
             <button
               onClick={clearSelection}
-              className="text-sm px-3 py-2 text-gray-600 hover:text-gray-800 transition-colors"
+              className="px-3 py-2 text-sm text-gray-600 transition-colors hover:text-gray-800"
             >
               Clear Selection
             </button>
             <button
               onClick={handleApply}
               disabled={!hasChanges}
-              className="text-sm px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium disabled:bg-gray-300 disabled:cursor-not-allowed"
+              className="px-4 py-2 text-sm font-medium text-white transition-colors bg-blue-600 rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
             >
               {isUpdate ? 'Update Presets' : 'Add Selected Presets'}
             </button>
