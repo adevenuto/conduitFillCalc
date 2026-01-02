@@ -312,7 +312,7 @@ const ConduitFillCalculator = () => {
           </p>
         </header>
 
-        <div className="grid grid-cols-1 gap-4 text-gray-800 lg:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 text-gray-800 lg:grid-cols-2 lg:items-start">
           {/* LEFT COLUMN - Form */}
           <div className="p-4 bg-white border border-gray-200 rounded-lg shadow">
             <div className="flex gap-2 mb-4">
@@ -883,12 +883,12 @@ const ConduitFillCalculator = () => {
           </div>
 
           {/* RIGHT COLUMN - Results */}
-          <div className="sticky top-4 p-4 bg-white border border-gray-200 rounded-lg shadow max-h-[calc(100vh-2rem)] overflow-y-auto">
+          <div className="lg:sticky lg:top-4 p-4 bg-white border border-gray-200 rounded-lg shadow lg:self-start lg:max-h-[calc(100vh-2rem)] flex flex-col">
             {results ? (
-              <div>
-                <h2 className="mb-3 text-xl font-bold text-slate-800">Results</h2>
+              <div className="flex flex-col h-full overflow-hidden">
+                <h2 className="flex-shrink-0 mb-3 text-xl font-bold text-slate-800">Results</h2>
 
-                <div className="p-3 mb-3 border rounded-lg bg-blue-50">
+                <div className="flex-shrink-0 p-3 mb-3 border rounded-lg bg-blue-50">
                   <div className="flex items-start gap-2">
                     <Info className="text-blue-600 mt-0.5 flex-shrink-0" size={20} />
                     <div>
@@ -901,8 +901,180 @@ const ConduitFillCalculator = () => {
                   </div>
                 </div>
 
+                {results.mode === 'findConduit' ? (
+                  <div className="flex-shrink-0">
+                    {results.minSize ? (
+                      <div className="p-4 border rounded-lg bg-emerald-50 border-emerald-300">
+                        <div className="flex items-start gap-2 mb-3">
+                          <CheckCircle className="flex-shrink-0 text-emerald-600" size={24} />
+                          <div>
+                            <h3 className="text-lg font-bold text-emerald-900">
+                              {results.minSize}" {results.conduitType}
+                            </h3>
+                            <p className="text-xs text-emerald-700">
+                              Minimum conduit size required
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-2 mb-3">
+                          <div className="p-2 bg-white border border-gray-200 rounded">
+                            <div className="text-xs font-medium text-gray-700">Total Area</div>
+                            <div className="text-sm font-bold text-gray-900">
+                              {results.minSizeData.total.toFixed(3)} in²
+                            </div>
+                          </div>
+                          <div className="p-2 bg-white border border-gray-200 rounded">
+                            <div className="text-xs font-medium text-gray-700">Allowable</div>
+                            <div className="text-sm font-bold text-gray-900">
+                              {results.minSizeData.allowableFill.toFixed(3)} in²
+                            </div>
+                          </div>
+                          <div className="p-2 bg-white border border-gray-200 rounded">
+                            <div className="text-xs font-medium text-gray-700">Wire Area</div>
+                            <div className="text-sm font-bold text-gray-900">
+                              {results.minSizeData.actualFill.toFixed(3)} in²
+                            </div>
+                          </div>
+                          <div className="p-2 bg-white border border-gray-200 rounded">
+                            <div className="text-xs font-medium text-gray-700">Fill %</div>
+                            <div className="text-sm font-bold text-emerald-600">
+                              {results.minSizeData.fillPercentage.toFixed(1)}%
+                            </div>
+                          </div>
+                        </div>
+
+                        <div>
+                          <div className="mb-1 text-xs font-medium text-gray-800">Fill Visualization:</div>
+                          <div className="w-full h-6 overflow-hidden bg-gray-200 rounded-full">
+                            <div
+                              className={`h-full ${getFillColor(results.minSizeData.fillPercentage)} transition-all duration-500 flex items-center justify-center text-white font-semibold text-xs`}
+                              style={{ width: `${results.minSizeData.fillPercentage}%` }}
+                            >
+                              {results.minSizeData.fillPercentage.toFixed(1)}%
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="p-4 border border-red-300 rounded-lg bg-red-50">
+                        <div className="flex items-start gap-2">
+                          <AlertCircle className="flex-shrink-0 text-red-600" size={24} />
+                          <div>
+                            <h3 className="mb-1 text-lg font-bold text-red-900">
+                              No Suitable Conduit
+                            </h3>
+                            <p className="text-xs text-red-700">
+                              Too many wires for largest {results.conduitType} conduit. Reduce wires or use different type.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="flex-shrink-0">
+                    <div className={`${results.compliant ? 'bg-emerald-50 border-emerald-300' : 'bg-red-50 border-red-300'} border rounded-lg p-4`}>
+                      <div className="flex items-start gap-2 mb-3">
+                        {results.compliant ? (
+                          <CheckCircle className="flex-shrink-0 text-emerald-600" size={24} />
+                        ) : (
+                          <AlertCircle className="flex-shrink-0 text-red-600" size={24} />
+                        )}
+                        <div>
+                          <h3 className={`text-lg font-bold mb-1 ${results.compliant ? 'text-emerald-900' : 'text-red-900'}`}>
+                            {results.compliant ? 'Code Compliant ✓' : 'NOT Compliant ✗'}
+                          </h3>
+                          <p className={`text-xs ${results.compliant ? 'text-emerald-700' : 'text-red-700'}`}>
+                            {results.selectedConduit.size}" {results.selectedConduit.type}
+                            {results.compliant ? ' works!' : ' too small'}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-2 mb-3">
+                        <div className="p-2 bg-white border border-gray-200 rounded">
+                          <div className="text-xs font-medium text-gray-700">Total Area</div>
+                          <div className="text-sm font-bold text-gray-900">
+                            {results.conduitData.total.toFixed(3)} in²
+                          </div>
+                        </div>
+                        <div className="p-2 bg-white border border-gray-200 rounded">
+                          <div className="text-xs font-medium text-gray-700">Allowable</div>
+                          <div className="text-sm font-bold text-gray-900">
+                            {results.allowableFill.toFixed(3)} in²
+                          </div>
+                        </div>
+                        <div className="p-2 bg-white border border-gray-200 rounded">
+                          <div className="text-xs font-medium text-gray-700">Wire Area</div>
+                          <div className="text-sm font-bold text-gray-900">
+                            {results.totalWireArea.toFixed(3)} in²
+                          </div>
+                        </div>
+                        <div className="p-2 bg-white border border-gray-200 rounded">
+                          <div className="text-xs font-medium text-gray-700">Fill %</div>
+                          <div className={`text-sm font-bold ${results.compliant ? 'text-emerald-600' : 'text-red-600'}`}>
+                            {results.actualFillPercent.toFixed(1)}%
+                          </div>
+                        </div>
+                      </div>
+
+                      <div>
+                        <div className="mb-1 text-xs font-medium text-gray-800">Fill Visualization:</div>
+                        <div className="relative w-full h-6 overflow-hidden bg-gray-200 rounded-full">
+                          <div
+                            className={`h-full ${getFillColor(results.actualFillPercent)} transition-all duration-500 flex items-center justify-center text-white font-semibold text-xs`}
+                            style={{ width: `${Math.min(results.actualFillPercent, 100)}%` }}
+                          >
+                            {results.actualFillPercent.toFixed(1)}%
+                          </div>
+                          <div 
+                            className="absolute top-0 bottom-0 w-0.5 bg-gray-800 opacity-50"
+                            style={{ left: `${results.fillPercent * 100}%` }}
+                          >
+                            <div className="absolute -top-5 left-1/2 transform -translate-x-1/2 text-xs whitespace-nowrap bg-gray-800 text-white px-1.5 py-0.5 rounded">
+                              Max
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {!results.compliant && (
+                        <div className="p-2 mt-3 border border-yellow-300 rounded bg-yellow-50">
+                          <p className="text-xs text-yellow-800">
+                            <strong>Tip:</strong> Use larger conduit or fewer wires
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {/* Clear Actions */}
+                <div className="flex-shrink-0 pt-3 mt-4 border-t border-gray-200">
+                  <div className="flex gap-2">
+                    <button
+                      onClick={clearAllWires}
+                      className="flex items-center justify-center flex-1 gap-2 px-3 py-2 text-sm text-gray-100 transition-colors rounded-lg bg-slate-600 hover:bg-slate-500"
+                    >
+                      <Trash2 size={16} />
+                      Clear Wires
+                    </button>
+                    <button
+                      onClick={resetAll}
+                      className="flex items-center justify-center flex-1 gap-2 px-3 py-2 text-sm text-white transition-colors bg-red-600 rounded-lg hover:bg-red-500"
+                    >
+                      <RotateCcw size={16} />
+                      Reset All
+                    </button>
+                  </div>
+                  <p className="mt-1 text-xs text-center text-gray-600">
+                    Clear wires only or reset everything to start over
+                  </p>
+                </div>
+
                 {results.mixedInsulation && (
-                  <div className="p-3 mb-3 border border-yellow-300 rounded-lg bg-yellow-50">
+                  <div className="flex-shrink-0 p-3 mb-3 border border-yellow-300 rounded-lg bg-yellow-50">
                     <div className="flex items-start gap-2">
                       <AlertCircle className="text-yellow-600 mt-0.5 flex-shrink-0" size={18} />
                       <div>
@@ -915,8 +1087,8 @@ const ConduitFillCalculator = () => {
                   </div>
                 )}
 
-                <div className="mb-3">
-                  <h3 className="mb-2 text-sm font-semibold text-slate-800">Wire Breakdown</h3>
+                <div className="flex-1 min-h-0 mb-3 overflow-y-auto">
+                  <h3 className="sticky top-0 z-10 pb-1 mb-2 text-sm font-semibold bg-white text-slate-800">Wire Breakdown</h3>
                   <div className="overflow-x-auto">
                     <table className="w-full text-xs">
                       <thead className="bg-gray-100">
@@ -1042,177 +1214,6 @@ const ConduitFillCalculator = () => {
                   </div>
                 </div>
 
-                {results.mode === 'findConduit' ? (
-                  <div>
-                    {results.minSize ? (
-                      <div className="p-4 border rounded-lg bg-emerald-50 border-emerald-300">
-                        <div className="flex items-start gap-2 mb-3">
-                          <CheckCircle className="flex-shrink-0 text-emerald-600" size={24} />
-                          <div>
-                            <h3 className="text-lg font-bold text-emerald-900">
-                              {results.minSize}" {results.conduitType}
-                            </h3>
-                            <p className="text-xs text-emerald-700">
-                              Minimum conduit size required
-                            </p>
-                          </div>
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-2 mb-3">
-                          <div className="p-2 bg-white border border-gray-200 rounded">
-                            <div className="text-xs font-medium text-gray-700">Total Area</div>
-                            <div className="text-sm font-bold text-gray-900">
-                              {results.minSizeData.total.toFixed(3)} in²
-                            </div>
-                          </div>
-                          <div className="p-2 bg-white border border-gray-200 rounded">
-                            <div className="text-xs font-medium text-gray-700">Allowable</div>
-                            <div className="text-sm font-bold text-gray-900">
-                              {results.minSizeData.allowableFill.toFixed(3)} in²
-                            </div>
-                          </div>
-                          <div className="p-2 bg-white border border-gray-200 rounded">
-                            <div className="text-xs font-medium text-gray-700">Wire Area</div>
-                            <div className="text-sm font-bold text-gray-900">
-                              {results.minSizeData.actualFill.toFixed(3)} in²
-                            </div>
-                          </div>
-                          <div className="p-2 bg-white border border-gray-200 rounded">
-                            <div className="text-xs font-medium text-gray-700">Fill %</div>
-                            <div className="text-sm font-bold text-emerald-600">
-                              {results.minSizeData.fillPercentage.toFixed(1)}%
-                            </div>
-                          </div>
-                        </div>
-
-                        <div>
-                          <div className="mb-1 text-xs font-medium text-gray-800">Fill Visualization:</div>
-                          <div className="w-full h-6 overflow-hidden bg-gray-200 rounded-full">
-                            <div
-                              className={`h-full ${getFillColor(results.minSizeData.fillPercentage)} transition-all duration-500 flex items-center justify-center text-white font-semibold text-xs`}
-                              style={{ width: `${results.minSizeData.fillPercentage}%` }}
-                            >
-                              {results.minSizeData.fillPercentage.toFixed(1)}%
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="p-4 border border-red-300 rounded-lg bg-red-50">
-                        <div className="flex items-start gap-2">
-                          <AlertCircle className="flex-shrink-0 text-red-600" size={24} />
-                          <div>
-                            <h3 className="mb-1 text-lg font-bold text-red-900">
-                              No Suitable Conduit
-                            </h3>
-                            <p className="text-xs text-red-700">
-                              Too many wires for largest {results.conduitType} conduit. Reduce wires or use different type.
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                ) : (
-                  <div>
-                    <div className={`${results.compliant ? 'bg-emerald-50 border-emerald-300' : 'bg-red-50 border-red-300'} border rounded-lg p-4`}>
-                      <div className="flex items-start gap-2 mb-3">
-                        {results.compliant ? (
-                          <CheckCircle className="flex-shrink-0 text-emerald-600" size={24} />
-                        ) : (
-                          <AlertCircle className="flex-shrink-0 text-red-600" size={24} />
-                        )}
-                        <div>
-                          <h3 className={`text-lg font-bold mb-1 ${results.compliant ? 'text-emerald-900' : 'text-red-900'}`}>
-                            {results.compliant ? 'Code Compliant ✓' : 'NOT Compliant ✗'}
-                          </h3>
-                          <p className={`text-xs ${results.compliant ? 'text-emerald-700' : 'text-red-700'}`}>
-                            {results.selectedConduit.size}" {results.selectedConduit.type}
-                            {results.compliant ? ' works!' : ' too small'}
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-2 mb-3">
-                        <div className="p-2 bg-white border border-gray-200 rounded">
-                          <div className="text-xs font-medium text-gray-700">Total Area</div>
-                          <div className="text-sm font-bold text-gray-900">
-                            {results.conduitData.total.toFixed(3)} in²
-                          </div>
-                        </div>
-                        <div className="p-2 bg-white border border-gray-200 rounded">
-                          <div className="text-xs font-medium text-gray-700">Allowable</div>
-                          <div className="text-sm font-bold text-gray-900">
-                            {results.allowableFill.toFixed(3)} in²
-                          </div>
-                        </div>
-                        <div className="p-2 bg-white border border-gray-200 rounded">
-                          <div className="text-xs font-medium text-gray-700">Wire Area</div>
-                          <div className="text-sm font-bold text-gray-900">
-                            {results.totalWireArea.toFixed(3)} in²
-                          </div>
-                        </div>
-                        <div className="p-2 bg-white border border-gray-200 rounded">
-                          <div className="text-xs font-medium text-gray-700">Fill %</div>
-                          <div className={`text-sm font-bold ${results.compliant ? 'text-emerald-600' : 'text-red-600'}`}>
-                            {results.actualFillPercent.toFixed(1)}%
-                          </div>
-                        </div>
-                      </div>
-
-                      <div>
-                        <div className="mb-1 text-xs font-medium text-gray-800">Fill Visualization:</div>
-                        <div className="relative w-full h-6 overflow-hidden bg-gray-200 rounded-full">
-                          <div
-                            className={`h-full ${getFillColor(results.actualFillPercent)} transition-all duration-500 flex items-center justify-center text-white font-semibold text-xs`}
-                            style={{ width: `${Math.min(results.actualFillPercent, 100)}%` }}
-                          >
-                            {results.actualFillPercent.toFixed(1)}%
-                          </div>
-                          <div 
-                            className="absolute top-0 bottom-0 w-0.5 bg-gray-800 opacity-50"
-                            style={{ left: `${results.fillPercent * 100}%` }}
-                          >
-                            <div className="absolute -top-5 left-1/2 transform -translate-x-1/2 text-xs whitespace-nowrap bg-gray-800 text-white px-1.5 py-0.5 rounded">
-                              Max
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      {!results.compliant && (
-                        <div className="p-2 mt-3 border border-yellow-300 rounded bg-yellow-50">
-                          <p className="text-xs text-yellow-800">
-                            <strong>Tip:</strong> Use larger conduit or fewer wires
-                          </p>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                )}
-
-                {/* Clear Actions */}
-                <div className="pt-3 mt-4 border-t border-gray-200">
-                  <div className="flex gap-2">
-                    <button
-                      onClick={clearAllWires}
-                      className="flex items-center justify-center flex-1 gap-2 px-3 py-2 text-sm text-gray-100 transition-colors rounded-lg bg-slate-600 hover:bg-slate-500"
-                    >
-                      <Trash2 size={16} />
-                      Clear Wires
-                    </button>
-                    <button
-                      onClick={resetAll}
-                      className="flex items-center justify-center flex-1 gap-2 px-3 py-2 text-sm text-white transition-colors bg-red-600 rounded-lg hover:bg-red-500"
-                    >
-                      <RotateCcw size={16} />
-                      Reset All
-                    </button>
-                  </div>
-                  <p className="mt-1 text-xs text-center text-gray-600">
-                    Clear wires only or reset everything to start over
-                  </p>
-                </div>
               </div>
             ) : (
               <div className="flex items-center justify-center h-64 text-gray-500">
