@@ -741,15 +741,17 @@ const ConduitFillCalculator = () => {
 
               <button
                 onClick={addIndividualWire}
-                disabled={hasIncompleteWires}
+                disabled={hasIncompleteWires || individualWires.length === 0}
                 className={`w-full flex items-center justify-center gap-2 px-3 py-2 text-sm rounded-lg transition-colors ${
-                  hasIncompleteWires
+                  hasIncompleteWires || individualWires.length === 0
                     ? 'bg-gray-300 text-gray-500 cursor-not-allowed border border-gray-400'
                     : 'bg-emerald-600 text-white hover:bg-emerald-500'
                 }`}
               >
                 <Plus size={16} />
-                {hasIncompleteWires ? 'Select Wire Type First' : 'Add Individual Wire'}
+                {hasIncompleteWires ? 'Select Wire Type First' : 
+                individualWires.length === 0 ? 'Add First Wire Above' : 
+                'Add Individual Wire'}
               </button>
             </div>
 
