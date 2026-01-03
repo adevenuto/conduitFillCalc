@@ -219,7 +219,6 @@ const PresetsModal = ({ isOpen, onClose, currentPresetInstances, onUpdatePresets
             Select presets and adjust quantities. When you click Apply, your current preset selections will be replaced.
           </p>
           <ul className="space-y-1 text-xs text-blue-700">
-            <li>• Click presets to select them, then adjust quantities with +/- buttons</li>
             <li>• You can select multiple presets at once</li>
             <li>• Presets are based on common electrical installations</li>
             <li>• You can still add individual wires manually after applying presets</li>
