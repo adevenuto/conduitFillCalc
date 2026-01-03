@@ -143,7 +143,7 @@ const ConduitFillCalculator = () => {
 
   // Check if any individual wires are incomplete
   const hasIncompleteWires = individualWires.some(wire => wire.type === '');
-  const hasAnyWires = presetInstances.length > 0 || individualWires.length > 0;
+  const hasAnyWires = individualWires.length > 0;
 
   const clearAllWires = () => {
     setPresetInstances([]);
@@ -456,6 +456,76 @@ const ConduitFillCalculator = () => {
                 </button>
               </div>
               
+              
+
+              {/* Preset Instances */}
+              {presetInstances.map((instance) => {
+                const preset = wirePresets[instance.presetKey];
+                if (!preset) return null;
+
+                return (
+                  <div key={instance.id} className="p-3 mb-4 border border-blue-200 rounded-lg bg-blue-50">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-semibold text-blue-800">
+                          📋 {preset.name}
+                        </span>
+                      </div>
+                      <button
+                        onClick={() => removePresetInstance(instance.id)}
+                        className="p-1 text-red-600 rounded hover:bg-red-100"
+                        title="Remove entire preset"
+                      >
+                        <X size={16} />
+                      </button>
+                    </div>
+
+                    {/* Quantity control */}
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="text-xs text-blue-700">Circuits:</span>
+                      <button
+                        onClick={() => updatePresetQuantity(instance.id, instance.quantity - 1)}
+                        disabled={instance.quantity <= 1}
+                        className="p-1 bg-white rounded hover:bg-blue-100 disabled:opacity-50"
+                      >
+                        <Minus size={14} />
+                      </button>
+                      <span className="text-sm font-bold text-blue-900 min-w-[2rem] text-center">
+                        {instance.quantity}
+                      </span>
+                      <button
+                        onClick={() => updatePresetQuantity(instance.id, instance.quantity + 1)}
+                        className="p-1 bg-white rounded hover:bg-blue-100"
+                      >
+                        <Plus size={14} />
+                      </button>
+                    </div>
+
+                    {/* Show wires for each circuit */}
+                    {[...Array(instance.quantity)].map((_, circuitIdx) => (
+                      <div key={circuitIdx}>
+                        {circuitIdx > 0 && <hr className="my-2 border-blue-300" />}
+                        <div className="mb-1 text-xs text-blue-600">Circuit {circuitIdx + 1}:</div>
+                        {preset.wires.map((wire, wireIdx) => (
+                          <div key={wireIdx} className="flex justify-between mb-1 ml-2 text-xs text-gray-700">
+                            <span>
+                              {wire.quantity}× {wireTypes[wire.type]?.label || wire.type} #{wire.size}
+                            </span>
+                            <span className={`capitalize ${
+                              wire.role === 'ground' ? 'text-emerald-600' : 
+                              wire.role === 'phase' ? 'text-blue-600' : 
+                              'text-gray-600'
+                            }`}>
+                              {wire.role === 'ground' ? 'EGC' : wire.role}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    ))}
+                  </div>
+                );
+              })}
+
               {/* Show initial wire form when no wires exist */}
               {!hasAnyWires && (
                 <div className="p-3 mb-3 bg-white border rounded-lg">
@@ -557,74 +627,6 @@ const ConduitFillCalculator = () => {
                   </div>
                 </div>
               )}
-
-              {/* Preset Instances */}
-              {presetInstances.map((instance) => {
-                const preset = wirePresets[instance.presetKey];
-                if (!preset) return null;
-
-                return (
-                  <div key={instance.id} className="p-3 mb-4 border border-blue-200 rounded-lg bg-blue-50">
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm font-semibold text-blue-800">
-                          📋 {preset.name}
-                        </span>
-                      </div>
-                      <button
-                        onClick={() => removePresetInstance(instance.id)}
-                        className="p-1 text-red-600 rounded hover:bg-red-100"
-                        title="Remove entire preset"
-                      >
-                        <X size={16} />
-                      </button>
-                    </div>
-
-                    {/* Quantity control */}
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className="text-xs text-blue-700">Circuits:</span>
-                      <button
-                        onClick={() => updatePresetQuantity(instance.id, instance.quantity - 1)}
-                        disabled={instance.quantity <= 1}
-                        className="p-1 bg-white rounded hover:bg-blue-100 disabled:opacity-50"
-                      >
-                        <Minus size={14} />
-                      </button>
-                      <span className="text-sm font-bold text-blue-900 min-w-[2rem] text-center">
-                        {instance.quantity}
-                      </span>
-                      <button
-                        onClick={() => updatePresetQuantity(instance.id, instance.quantity + 1)}
-                        className="p-1 bg-white rounded hover:bg-blue-100"
-                      >
-                        <Plus size={14} />
-                      </button>
-                    </div>
-
-                    {/* Show wires for each circuit */}
-                    {[...Array(instance.quantity)].map((_, circuitIdx) => (
-                      <div key={circuitIdx}>
-                        {circuitIdx > 0 && <hr className="my-2 border-blue-300" />}
-                        <div className="mb-1 text-xs text-blue-600">Circuit {circuitIdx + 1}:</div>
-                        {preset.wires.map((wire, wireIdx) => (
-                          <div key={wireIdx} className="flex justify-between mb-1 ml-2 text-xs text-gray-700">
-                            <span>
-                              {wire.quantity}× {wireTypes[wire.type]?.label || wire.type} #{wire.size}
-                            </span>
-                            <span className={`capitalize ${
-                              wire.role === 'ground' ? 'text-emerald-600' : 
-                              wire.role === 'phase' ? 'text-blue-600' : 
-                              'text-gray-600'
-                            }`}>
-                              {wire.role === 'ground' ? 'EGC' : wire.role}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    ))}
-                  </div>
-                );
-              })}
 
               {/* Individual Wires */}
               {individualWires.length > 0 && (
