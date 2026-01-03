@@ -210,6 +210,8 @@ const PresetsModal = ({ isOpen, onClose, currentPresetInstances, onUpdatePresets
       isOpen={isOpen} 
       onClose={onClose} 
       title="Wire Circuit Presets"
+      variant="slide"
+      slideFrom="right"
       maxWidth="max-w-5xl"
     >
       <div className="space-y-6">

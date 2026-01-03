@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, X, AlertCircle, CheckCircle, Info, Trash2, RotateCcw, Minus, ChevronDown, ChevronUp } from 'lucide-react';
+import { Plus, X, AlertCircle, CheckCircle, Info, Trash2, RotateCcw, Minus, ChevronDown, ChevronUp, Sparkle } from 'lucide-react';
 import { wireTypes, conduitTypes, getConduitsByCategory, getFillRule, wirePresets } from './utils/nec/index.js';
 import { WireIcon, ConduitIcon, IconWithTooltip } from './components/Icons.js';
 import PresetsModal from './components/PresetsModal.js';
@@ -15,6 +15,8 @@ const ConduitFillCalculator = () => {
   // NEW STATE STRUCTURE - Two separate arrays instead of one mixed array
   const [presetInstances, setPresetInstances] = useState([]);
   const [individualWires, setIndividualWires] = useState([]);
+  
+  const [selectedConduitCategory, setSelectedConduitCategory] = useState('Metal');
   
   const [selectedConduit, setSelectedConduit] = useState({
     type: 'EMT',
@@ -338,86 +340,74 @@ const ConduitFillCalculator = () => {
               </button>
             </div>
 
-            <div className="mb-4">
-              <h2 className="mb-2 text-lg font-semibold text-slate-800">Conduit Type</h2>
-              
-              {/* Metal Conduits */}
-              <div className="mb-3">
-                <h3 className="mb-1 text-xs font-medium text-gray-600">🔩 Metal Conduits</h3>
-                <div className="grid grid-cols-3 gap-1">
-                  {metalConduits.map(type => (
-                    <IconWithTooltip
-                      key={type}
-                      tooltip={conduitTypes[type]?.description || type}
-                    >
-                      <button
-                        onClick={() => setSelectedConduit({ ...selectedConduit, type })}
-                        className={`py-1.5 px-2 rounded text-xs font-medium transition-colors flex items-center gap-1 border-2 ${
-                          selectedConduit.type === type
-                            ? 'bg-blue-600 text-white border-blue-600'
-                            : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
-                        }`}
-                      >
-                        <ConduitIcon type={type} size={16} />
-                        {type}
-                      </button>
-                    </IconWithTooltip>
-                  ))}
-                </div>
-              </div>
+<div className="mb-4">
+  <h2 className="mb-2 text-lg font-semibold text-slate-800">Conduit Type</h2>
+  
+  {/* Tabbed Conduit Type Selection */}
+  <div className="mb-3">
+    <div className="flex border-b border-gray-200">
+      <button 
+        className={`px-4 py-2 text-sm font-medium transition-colors flex items-center gap-2 ${
+          selectedConduitCategory === 'Metal' 
+            ? 'border-b-2 border-blue-600 text-blue-600' 
+            : 'text-gray-600 hover:text-gray-800'
+        }`}
+        onClick={() => setSelectedConduitCategory('Metal')}
+      >
+        <Sparkle size={16} />
+        Metal
+      </button>
+      <button 
+        className={`px-4 py-2 text-sm font-medium transition-colors flex items-center gap-2 ${
+          selectedConduitCategory === 'Nonmetallic' 
+            ? 'border-b-2 border-blue-600 text-blue-600' 
+            : 'text-gray-600 hover:text-gray-800'
+        }`}
+        onClick={() => setSelectedConduitCategory('Nonmetallic')}
+      >
+        <Sparkle size={16} />
+        Nonmetallic
+      </button>
+      <button 
+        className={`px-4 py-2 text-sm font-medium transition-colors flex items-center gap-2 ${
+          selectedConduitCategory === 'Flexible' 
+            ? 'border-b-2 border-blue-600 text-blue-600' 
+            : 'text-gray-600 hover:text-gray-800'
+        }`}
+        onClick={() => setSelectedConduitCategory('Flexible')}
+      >
+        <Sparkle size={16} />
+        Flexible
+      </button>
+    </div>
 
-              {/* Nonmetallic Conduits */}
-              <div className="mb-3">
-                <h3 className="mb-1 text-xs font-medium text-gray-600">🧱 Nonmetallic Conduits</h3>
-                <div className="grid grid-cols-3 gap-1">
-                  {nonmetallicConduits.map(type => (
-                    <IconWithTooltip
-                      key={type}
-                      tooltip={conduitTypes[type]?.description || type}
-                    >
-                      <button
-                        onClick={() => setSelectedConduit({ ...selectedConduit, type })}
-                        className={`py-1.5 px-2 rounded text-xs font-medium transition-colors flex items-center gap-1 border-2 ${
-                          selectedConduit.type === type
-                            ? 'bg-blue-600 text-white border-blue-600'
-                            : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
-                        }`}
-                      >
-                        <ConduitIcon type={type} size={16} />
-                        {type === 'PVC-40' ? 'PVC Sch 40' :
-                         type === 'PVC-80' ? 'PVC Sch 80' :
-                         type === 'PVC-A' ? 'PVC-A' :
-                         type === 'PVC-EB' ? 'PVC-EB' : type}
-                      </button>
-                    </IconWithTooltip>
-                  ))}
-                </div>
-              </div>
-
-              {/* Flexible Conduits */}
-              <div className="mb-3">
-                <h3 className="mb-1 text-xs font-medium text-gray-600">🌊 Flexible Conduits</h3>
-                <div className="grid grid-cols-2 gap-1">
-                  {flexibleConduits.map(type => (
-                    <IconWithTooltip
-                      key={type}
-                      tooltip={conduitTypes[type]?.description || type}
-                    >
-                      <button
-                        onClick={() => setSelectedConduit({ ...selectedConduit, type })}
-                        className={`py-1.5 px-2 rounded text-xs font-medium transition-colors flex items-center gap-1 border-2 ${
-                          selectedConduit.type === type
-                            ? 'bg-blue-600 text-white border-blue-600'
-                            : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
-                        }`}
-                      >
-                        <ConduitIcon type={type} size={16} />
-                        {type}
-                      </button>
-                    </IconWithTooltip>
-                  ))}
-                </div>
-              </div>
+    {/* Conduit Type Grid */}
+    <div className="grid grid-cols-3 gap-1 mt-3">
+      {(selectedConduitCategory === 'Metal' ? metalConduits : 
+        selectedConduitCategory === 'Nonmetallic' ? nonmetallicConduits : 
+        flexibleConduits).map(type => (
+        <IconWithTooltip
+          key={type}
+          tooltip={conduitTypes[type]?.description || type}
+        >
+          <button
+            onClick={() => setSelectedConduit({ ...selectedConduit, type })}
+            className={`py-1.5 px-2 rounded text-xs font-medium transition-colors flex items-center gap-1 border-2 ${
+              selectedConduit.type === type
+                ? 'bg-blue-600 text-white border-blue-600'
+                : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+            }`}
+          >
+            <ConduitIcon type={type} size={16} />
+            {type === 'PVC-40' ? 'PVC Sch 40' :
+             type === 'PVC-80' ? 'PVC Sch 80' :
+             type === 'PVC-A' ? 'PVC-A' :
+             type === 'PVC-EB' ? 'PVC-EB' : type}
+          </button>
+        </IconWithTooltip>
+      ))}
+    </div>
+  </div>
 
               {/* Show conduit info for selected type */}
               {selectedConduit.type && conduitTypes[selectedConduit.type] && (
@@ -753,15 +743,6 @@ const ConduitFillCalculator = () => {
                 individualWires.length === 0 ? 'Add First Wire Above' : 
                 'Add Individual Wire'}
               </button>
-            </div>
-
-            <div className="p-3 mb-4 border border-gray-300 rounded-lg bg-gray-50">
-              <h4 className="mb-1 text-sm font-semibold text-slate-800">📋 NEC References</h4>
-              <ul className="text-xs text-gray-700 space-y-0.5">
-                <li>• Table 1: Fill percentages</li>
-                <li>• Table 4: Conduit dimensions</li>
-                <li>• Table 5: Wire areas</li>
-              </ul>
             </div>
 
             <div className="mt-4 space-y-4">
