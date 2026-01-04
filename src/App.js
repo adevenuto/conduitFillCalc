@@ -1053,7 +1053,7 @@ const ConduitFillCalculator = () => {
                       Reset All
                     </button>
                   </div>
-                  <p className="mt-1 text-xs text-center text-gray-600">
+                  <p className="my-1 text-xs text-center text-gray-600">
                     Clear wires only or reset everything to start over
                   </p>
                 </div>
