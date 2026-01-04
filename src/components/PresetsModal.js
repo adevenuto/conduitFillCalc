@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Plus, Minus, Check, X } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Plus, Minus, Check } from 'lucide-react';
 import Modal from './Modal';
 import { wirePresets } from '../utils/nec/wirePresets';
 
@@ -101,7 +101,6 @@ const PresetsModal = ({ isOpen, onClose, currentPresetInstances, onUpdatePresets
       >
         <div 
           className="flex items-start justify-between mb-2"
-          // onClick={() => togglePreset(presetKey)}
         >
           <h4 className={`font-semibold text-sm transition-colors ${
             isSelected ? 'text-blue-700' : 'text-slate-800 group-hover:text-blue-700'
@@ -210,22 +209,12 @@ const PresetsModal = ({ isOpen, onClose, currentPresetInstances, onUpdatePresets
       isOpen={isOpen} 
       onClose={onClose} 
       title="Wire Circuit Presets"
-      variant="slide"
-      slideFrom="right"
-      maxWidth="max-w-5xl"
+      hasChanges={hasChanges}
+      isUpdate={isUpdate}
+      selectedPresets={selectedPresets}
+      clearSelection={clearSelection}
+      handleApply={handleApply}
     >
-      <div className="space-y-6">
-        <div className="p-4 border border-blue-200 rounded-lg bg-blue-50">
-          <h3 className="mb-2 font-semibold text-blue-900">📋 Quick Start Guide</h3>
-          <p className="mb-2 text-sm text-blue-800">
-            Select presets and adjust quantities. When you click Apply, your current preset selections will be replaced.
-          </p>
-          <ul className="space-y-1 text-xs text-blue-700">
-            <li>• You can select multiple presets at once</li>
-            <li>• Presets are based on common electrical installations</li>
-            <li>• You can still add individual wires manually after applying presets</li>
-          </ul>
-        </div>
 
         {Object.entries(presetCategories).map(([key, category]) => (
           <CategorySection key={key} category={category} />
@@ -236,42 +225,8 @@ const PresetsModal = ({ isOpen, onClose, currentPresetInstances, onUpdatePresets
             Don't see what you need? You can always add individual wires manually after closing this dialog.
           </p>
         </div>
-      </div>
 
-      {/* Selection Footer */}
-      <div className="sticky bottom-0 p-4 mt-4 bg-white border-t border-gray-200">
-        <div className="flex items-center justify-between">
-          <div className="text-sm text-gray-700">
-            {Object.keys(selectedPresets).length > 0 ? (
-              <>
-                <span className="font-semibold">
-                  {Object.keys(selectedPresets).length} preset{Object.keys(selectedPresets).length !== 1 ? 's' : ''} selected
-                </span>
-                <span className="ml-2 text-gray-500">
-                  (Total: {Object.values(selectedPresets).reduce((sum, { quantity }) => sum + quantity, 0)} circuit{Object.values(selectedPresets).reduce((sum, { quantity }) => sum + quantity, 0) !== 1 ? 's' : ''})
-                </span>
-              </>
-            ) : (
-              <span className="text-gray-500">No presets selected</span>
-            )}
-          </div>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={clearSelection}
-              className="px-3 py-2 text-sm text-gray-600 transition-colors hover:text-gray-800"
-            >
-              Clear Selection
-            </button>
-            <button
-              onClick={handleApply}
-              disabled={!hasChanges}
-              className="px-4 py-2 text-sm font-medium text-white transition-colors bg-blue-600 rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
-            >
-              {isUpdate ? 'Update Presets' : 'Add Selected Presets'}
-            </button>
-          </div>
-        </div>
-      </div>
+      
     </Modal>
   );
 };
