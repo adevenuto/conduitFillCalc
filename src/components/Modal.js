@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { X } from 'lucide-react';
 
 const Modal = ({ 
@@ -12,6 +12,26 @@ const Modal = ({
   clearSelection,
   handleApply
 }) => {
+
+  const contentRef = useRef(null);
+  const scrollPositionRef = useRef(0);
+
+  // Preserve scroll position during re-renders
+  useEffect(() => {
+    const contentEl = contentRef.current;
+    if (!contentEl) return;
+
+    contentEl.scrollTop = scrollPositionRef.current;
+
+    const handleScroll = () => {
+      scrollPositionRef.current = contentEl.scrollTop;
+    };
+
+    contentEl.addEventListener('scroll', handleScroll);
+    return () => contentEl.removeEventListener('scroll', handleScroll);
+  }, [selectedPresets]);
+
+
   // Handle escape key
   useEffect(() => {
     const handleEscape = (event) => {
@@ -62,7 +82,10 @@ const Modal = ({
           </div>
           
           {/* Content */}
-          <div className="flex-1 px-6 py-4 overflow-y-auto">
+          <div 
+            ref={contentRef}
+            className="flex-1 px-6 py-4 overflow-y-auto"
+          >
             {children}
           </div>
 
@@ -80,7 +103,7 @@ const Modal = ({
                     </span>
                   </>
                 ) : (
-                  <span className="text-gray-500">No presets selected</span>
+                  <span className="text-gray-500"></span>
                 )}
               </div>
               <div className="flex items-center gap-2">
@@ -95,7 +118,7 @@ const Modal = ({
                   disabled={!hasChanges}
                   className="px-4 py-2 text-sm font-medium text-white transition-colors bg-blue-600 rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
                 >
-                  {isUpdate ? 'Update Presets' : 'Add Selected Presets'}
+                  {isUpdate ? 'Update Presets' : 'Add Presets'}
                 </button>
               </div>
             </div>
